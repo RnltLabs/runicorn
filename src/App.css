@@ -112,6 +112,7 @@ h1 {
   justify-content: center;
   transition: all 0.3s;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  pointer-events: all;
 }
 
 .draw-button:hover,

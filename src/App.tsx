@@ -155,107 +155,139 @@ function App() {
     }
   }
 
-  // Funktion um den nächsten Punkt auf einer Linie zu finden
-  const snapPointToLine = (point: [number, number], lineStart: [number, number], lineEnd: [number, number]): [number, number] => {
-    const [px, py] = [point[1], point[0]]
-    const [x1, y1] = [lineStart[1], lineStart[0]]
-    const [x2, y2] = [lineEnd[1], lineEnd[0]]
+  // Douglas-Peucker Algorithmus zur intelligenten Punkt-Reduktion
+  const simplifyPath = (points: [number, number][], tolerance: number): [number, number][] => {
+    if (points.length <= 2) return points
 
-    const dx = x2 - x1
-    const dy = y2 - y1
+    const getPerpendicularDistance = (point: [number, number], lineStart: [number, number], lineEnd: [number, number]): number => {
+      const [x, y] = point
+      const [x1, y1] = lineStart
+      const [x2, y2] = lineEnd
 
-    if (dx === 0 && dy === 0) return lineStart
+      const dx = x2 - x1
+      const dy = y2 - y1
 
-    const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
+      if (dx === 0 && dy === 0) {
+        return Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2))
+      }
 
-    return [y1 + t * dy, x1 + t * dx]
+      const numerator = Math.abs(dy * x - dx * y + x2 * y1 - y2 * x1)
+      const denominator = Math.sqrt(dx * dx + dy * dy)
+      return numerator / denominator
+    }
+
+    const douglasPeucker = (pts: [number, number][], epsilon: number): [number, number][] => {
+      let maxDistance = 0
+      let index = 0
+
+      for (let i = 1; i < pts.length - 1; i++) {
+        const distance = getPerpendicularDistance(pts[i], pts[0], pts[pts.length - 1])
+        if (distance > maxDistance) {
+          maxDistance = distance
+          index = i
+        }
+      }
+
+      if (maxDistance > epsilon) {
+        const left = douglasPeucker(pts.slice(0, index + 1), epsilon)
+        const right = douglasPeucker(pts.slice(index), epsilon)
+        return [...left.slice(0, -1), ...right]
+      }
+
+      return [pts[0], pts[pts.length - 1]]
+    }
+
+    return douglasPeucker(points, tolerance)
   }
 
   const snapToRoad = async (points: [number, number][]) => {
-    console.log('snapToRoad called with points:', points.length)
+    console.log('GraphHopper Routing called with points:', points.length)
     if (points.length < 2) {
       console.log('Not enough points, returning original')
       return points
     }
 
-    // Reduziere Punkte für die Abfrage (jeder 5. Punkt)
-    const sampledPoints = points.filter((_, i) => i % 5 === 0 || i === points.length - 1)
-    console.log('Sampled', sampledPoints.length, 'points for road matching')
-
-    // Berechne Bounding Box
-    const lats = sampledPoints.map(p => p[0])
-    const lngs = sampledPoints.map(p => p[1])
-    const minLat = Math.min(...lats) - 0.001
-    const maxLat = Math.max(...lats) + 0.001
-    const minLng = Math.min(...lngs) - 0.001
-    const maxLng = Math.max(...lngs) + 0.001
+    // Vereinfache den Pfad intelligent - nur wichtige Punkte (Abbiegungen) behalten
+    // Tolerance: 0.00005 ≈ 5 Meter
+    const simplifiedPoints = simplifyPath(points, 0.00005)
+    console.log('Simplified from', points.length, 'to', simplifiedPoints.length, 'points (saved', ((1 - simplifiedPoints.length / points.length) * 100).toFixed(1), '%)')
 
     try {
-      // Hole alle Straßen in der Bounding Box von OpenStreetMap
-      const overpassQuery = `
-        [out:json];
-        (
-          way["highway"]["highway"!~"motorway|motorway_link|trunk|trunk_link"]["footway"!="sidewalk"](${minLat},${minLng},${maxLat},${maxLng});
-        );
-        out geom;
-      `
+      const apiKey = import.meta.env.VITE_GRAPHHOPPER_API_KEY
 
-      console.log('Fetching roads from Overpass API...')
-      const response = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        body: overpassQuery
-      })
-
-      const data = await response.json()
-      console.log('Got', data.elements?.length || 0, 'road segments')
-
-      if (!data.elements || data.elements.length === 0) {
-        console.log('No roads found, returning original points')
+      if (!apiKey) {
+        console.error('GraphHopper API Key not found!')
         return points
       }
 
-      // Erstelle eine Liste aller Straßensegmente
-      const roadSegments: Array<{start: [number, number], end: [number, number]}> = []
+      const finalRoute: [number, number][] = []
+      const batchSize = 5 // GraphHopper Free Plan: max 5 locations per request
+      let totalDistance = 0
+      let totalTime = 0
 
-      data.elements.forEach((way: any) => {
-        if (way.geometry) {
-          for (let i = 0; i < way.geometry.length - 1; i++) {
-            roadSegments.push({
-              start: [way.geometry[i].lat, way.geometry[i].lon],
-              end: [way.geometry[i + 1].lat, way.geometry[i + 1].lon]
-            })
+      // Verarbeite in Batches von 5 Punkten
+      for (let i = 0; i < simplifiedPoints.length - 1; i += batchSize - 1) {
+        const batchEnd = Math.min(i + batchSize, simplifiedPoints.length)
+        const batch = simplifiedPoints.slice(i, batchEnd)
+
+        console.log(`Processing batch ${Math.floor(i / (batchSize - 1)) + 1}: points ${i} to ${batchEnd - 1}`)
+
+        try {
+          // Erstelle point Parameter: point=lat,lng&point=lat,lng...
+          const pointsParam = batch.map(p => `point=${p[0]},${p[1]}`).join('&')
+          const url = `https://graphhopper.com/api/1/route?${pointsParam}&profile=foot&locale=de&points_encoded=false&key=${apiKey}`
+
+          const response = await fetch(url)
+          const data = await response.json()
+
+          if (data.paths && data.paths.length > 0) {
+            const path = data.paths[0]
+            const routePoints = path.points.coordinates.map((coord: [number, number]) =>
+              [coord[1], coord[0]] as [number, number] // GraphHopper gibt [lng, lat], wir brauchen [lat, lng]
+            )
+
+            totalDistance += path.distance
+            totalTime += path.time
+
+            // Füge die Route hinzu (ohne Duplikate am Anfang)
+            if (finalRoute.length === 0) {
+              finalRoute.push(...routePoints)
+            } else {
+              finalRoute.push(...routePoints.slice(1))
+            }
+          } else {
+            console.warn('Batch routing failed:', data.message)
+            // Bei Fehler: verwende die direkten Punkte
+            if (finalRoute.length === 0) {
+              finalRoute.push(...batch)
+            } else {
+              finalRoute.push(...batch.slice(1))
+            }
+          }
+
+          // Kleine Pause zwischen Requests um Rate Limits zu vermeiden
+          if (i + batchSize < simplifiedPoints.length) {
+            await new Promise(resolve => setTimeout(resolve, 100))
+          }
+
+        } catch (error) {
+          console.error('Error routing batch:', error)
+          if (finalRoute.length === 0) {
+            finalRoute.push(...batch)
+          } else {
+            finalRoute.push(...batch.slice(1))
           }
         }
-      })
+      }
 
-      console.log('Created', roadSegments.length, 'road segments')
+      console.log('Final route:', finalRoute.length, 'points')
+      console.log('Total Distance:', (totalDistance / 1000).toFixed(2), 'km')
+      console.log('Total Time:', (totalTime / 1000 / 60).toFixed(1), 'min')
 
-      // Snappe jeden Punkt auf das nächste Straßensegment
-      const snappedPoints = sampledPoints.map(point => {
-        let minDist = Infinity
-        let bestSnap = point
-
-        roadSegments.forEach(segment => {
-          const snapped = snapPointToLine(point, segment.start, segment.end)
-          const dist = Math.sqrt(
-            Math.pow(snapped[0] - point[0], 2) +
-            Math.pow(snapped[1] - point[1], 2)
-          )
-
-          if (dist < minDist) {
-            minDist = dist
-            bestSnap = snapped
-          }
-        })
-
-        return bestSnap
-      })
-
-      console.log('Snapped', snappedPoints.length, 'points to roads')
-      return snappedPoints
+      return finalRoute
 
     } catch (error) {
-      console.error('Fehler beim Snap-to-Road:', error)
+      console.error('Fehler beim GraphHopper Routing:', error)
       return points
     }
   }

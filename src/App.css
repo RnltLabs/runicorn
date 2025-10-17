@@ -1,0 +1,147 @@
+#root {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.search-container {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+}
+
+.search-container form {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #646cff;
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #535bf2;
+}
+
+.export-container {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+.export-button {
+  padding: 10px 20px;
+  background-color: #FC4C02;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 600;
+}
+
+.export-button:hover {
+  background-color: #e04402;
+}
+
+.map-container {
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.draw-controls {
+  position: absolute;
+  top: 90px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.draw-button,
+.confirm-button,
+.cancel-button {
+  width: 34px;
+  height: 34px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.draw-button:hover,
+.confirm-button:hover,
+.cancel-button:hover {
+  background-color: #f4f4f4;
+}
+
+.draw-button.active {
+  background-color: #FC4C02;
+  border-color: #FC4C02;
+  color: white;
+}
+
+.confirm-button {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.confirm-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+
+.cancel-button:hover {
+  background-color: #da190b;
+}

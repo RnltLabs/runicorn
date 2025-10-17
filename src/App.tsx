@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, useMap, Polyline, useMapEvents } from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import L from 'leaflet'
-import togpx from 'togpx'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
@@ -137,6 +136,7 @@ function App() {
   const [drawnPoints, setDrawnPoints] = useState<[number, number][]>([])
   const [snappedRoute, setSnappedRoute] = useState<[number, number][]>([])
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
+  const [routeStats, setRouteStats] = useState<{ distance: number, ascend: number, descend: number } | null>(null)
 
   const handleSearch = async (query: string) => {
     try {
@@ -223,7 +223,8 @@ function App() {
       const finalRoute: [number, number][] = []
       const batchSize = 5 // GraphHopper Free Plan: max 5 locations per request
       let totalDistance = 0
-      let totalTime = 0
+      let totalAscend = 0
+      let totalDescend = 0
 
       // Verarbeite in Batches von 5 Punkten
       for (let i = 0; i < simplifiedPoints.length - 1; i += batchSize - 1) {
@@ -247,7 +248,8 @@ function App() {
             )
 
             totalDistance += path.distance
-            totalTime += path.time
+            totalAscend += path.ascend || 0
+            totalDescend += path.descend || 0
 
             // Füge die Route hinzu (ohne Duplikate am Anfang)
             if (finalRoute.length === 0) {
@@ -282,13 +284,14 @@ function App() {
 
       console.log('Final route:', finalRoute.length, 'points')
       console.log('Total Distance:', (totalDistance / 1000).toFixed(2), 'km')
-      console.log('Total Time:', (totalTime / 1000 / 60).toFixed(1), 'min')
+      console.log('Total Ascend:', totalAscend.toFixed(0), 'm')
+      console.log('Total Descend:', totalDescend.toFixed(0), 'm')
 
-      return finalRoute
+      return { route: finalRoute, stats: { distance: totalDistance, ascend: totalAscend, descend: totalDescend } }
 
     } catch (error) {
       console.error('Fehler beim GraphHopper Routing:', error)
-      return points
+      return { route: points, stats: { distance: 0, ascend: 0, descend: 0 } }
     }
   }
 
@@ -307,28 +310,21 @@ function App() {
         maxLng: Math.max(...drawnPoints.map(p => p[1]))
       })
 
-      const snapped = await snapToRoad(drawnPoints)
+      const result = await snapToRoad(drawnPoints)
 
       console.log('=== GEMAPPTE ROUTE ===')
-      console.log('First 10 snapped points:', snapped.slice(0, 10))
-      console.log('Last 10 snapped points:', snapped.slice(-10))
+      console.log('First 10 snapped points:', result.route.slice(0, 10))
+      console.log('Last 10 snapped points:', result.route.slice(-10))
       console.log('Snapped bounding box:', {
-        minLat: Math.min(...snapped.map(p => p[0])),
-        maxLat: Math.max(...snapped.map(p => p[0])),
-        minLng: Math.min(...snapped.map(p => p[1])),
-        maxLng: Math.max(...snapped.map(p => p[1]))
+        minLat: Math.min(...result.route.map(p => p[0])),
+        maxLat: Math.max(...result.route.map(p => p[0])),
+        minLng: Math.min(...result.route.map(p => p[1])),
+        maxLng: Math.max(...result.route.map(p => p[1]))
       })
 
-      // Finde wo die Route weit außerhalb geht
-      const outliers = snapped.filter(p => p[1] < 8.405 || p[1] > 8.409)
-      console.log('Points outside expected bounds:', outliers.length, 'points')
-      if (outliers.length > 0) {
-        console.log('First outlier:', outliers[0])
-        console.log('Last outlier:', outliers[outliers.length - 1])
-      }
-
-      console.log('Setting snapped route with', snapped.length, 'points')
-      setSnappedRoute(snapped)
+      console.log('Setting snapped route with', result.route.length, 'points')
+      setSnappedRoute(result.route)
+      setRouteStats(result.stats)
       setDrawnPoints([])
     }
     setIsDrawing(false)
@@ -363,23 +359,26 @@ function App() {
       return
     }
 
-    const geojson = {
-      type: 'FeatureCollection',
-      features: [{
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: snappedRoute.map(p => [p[1], p[0]])
-        },
-        properties: {
-          name: 'Runicorn Route',
-          time: new Date().toISOString()
-        }
-      }]
-    }
+    // Erstelle GPX manuell
+    const trackPoints = snappedRoute.map(p =>
+      `      <trkpt lat="${p[0]}" lon="${p[1]}"></trkpt>`
+    ).join('\n')
 
-    const gpx = togpx(geojson)
-    const blob = new Blob([gpx], { type: 'application/gpx+xml' })
+    const gpxData = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Runicorn" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Runicorn Route</name>
+    <time>${new Date().toISOString()}</time>
+  </metadata>
+  <trk>
+    <name>Runicorn Route</name>
+    <trkseg>
+${trackPoints}
+    </trkseg>
+  </trk>
+</gpx>`
+
+    const blob = new Blob([gpxData], { type: 'application/gpx+xml' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -394,8 +393,22 @@ function App() {
     <>
       <h1>Runicorn Map</h1>
       <SearchControl onSearch={handleSearch} />
-      {snappedRoute.length > 0 && (
+      {snappedRoute.length > 0 && routeStats && (
         <div className="export-container">
+          <div className="route-stats">
+            <div className="stat">
+              <span className="stat-label">Distanz:</span>
+              <span className="stat-value">{(routeStats.distance / 1000).toFixed(2)} km</span>
+            </div>
+            <div className="stat">
+              <span className="stat-label">Höhenmeter ↑:</span>
+              <span className="stat-value">{routeStats.ascend.toFixed(0)} m</span>
+            </div>
+            <div className="stat">
+              <span className="stat-label">Höhenmeter ↓:</span>
+              <span className="stat-value">{routeStats.descend.toFixed(0)} m</span>
+            </div>
+          </div>
           <button onClick={exportToGPX} className="export-button">
             GPX Export
           </button>

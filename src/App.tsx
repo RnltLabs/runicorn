@@ -64,7 +64,6 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
           const center = map.latLngToContainerPoint([lat, lng])
           const offset = L.point(center.x + ERASER_PIXEL_RADIUS, center.y)
           const offsetLatLng = map.containerPointToLatLng(offset)
-          const geoRadius = map.distance([lat, lng], [offsetLatLng.lat, offsetLatLng.lng])
           const degreeRadius = (offsetLatLng.lng - lng)
 
           console.log(`Calling onErase with radius: ${Math.abs(degreeRadius)}`)

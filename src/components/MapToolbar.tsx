@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect, useRef } from "react"
+import { useState, type FormEvent, useEffect, useRef } from "react"
 import { Search, Download, TrendingUp, TrendingDown, Route, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"

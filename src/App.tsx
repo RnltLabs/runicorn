@@ -16,7 +16,8 @@ import { Header } from '@/components/Header'
 import { Hero } from '@/components/Hero'
 import { MapToolbar } from '@/components/MapToolbar'
 import { RouteProcessing } from '@/components/RouteProcessing'
-import { Toast } from '@/components/Toast'
+import { Toaster } from '@/components/ui/sonner'
+import { toast } from 'sonner'
 import { DrawControls } from '@/components/DrawControls'
 import { ZoomControls } from '@/components/ZoomControls'
 import { MapContainerWrapper } from '@/components/Map/MapContainer'
@@ -53,7 +54,7 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
   const [isMouseDown, setIsMouseDown] = useState(false)
   const [mousePosition, setMousePosition] = useState<[number, number] | null>(null)
   const [eraserRadius, setEraserRadius] = useState(30) // Pixel radius
-  const ERASER_PIXEL_RADIUS = 30 // Fixed pixel size on screen
+  const ERASER_PIXEL_RADIUS = 45 // Fixed pixel size on screen (increased for mobile)
 
   const map = useMapEvents({
     mousedown: (e) => {
@@ -119,6 +120,10 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
     mouseup: () => {
       if (isDrawing) {
         setIsMouseDown(false)
+        // Hide eraser circle on mobile after touch ends
+        if (drawMode === 'erase') {
+          setMousePosition(null)
+        }
       }
     },
     zoomend: () => {
@@ -188,13 +193,11 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
 function App() {
   const [showHero, setShowHero] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [showToast, setShowToast] = useState(false)
   const [position, setPosition] = useState<[number, number]>([49.0069, 8.4037])
   const [zoom, setZoom] = useState(13)
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
   const [snappedRoute, setSnappedRoute] = useState<[number, number][]>([])
   const [routeStats, setRouteStats] = useState<RouteResult['stats'] | null>(null)
-  const [showCreativeHint, setShowCreativeHint] = useState(false)
   const [processingProgress, setProcessingProgress] = useState(0)
   const [abortController, setAbortController] = useState<AbortController | null>(null)
 
@@ -274,11 +277,11 @@ function App() {
 
   const handleExport = () => {
     if (snappedRoute.length === 0) {
-      setShowCreativeHint(true)
+      toast.info("Get creative first! 🎨")
       return
     }
     exportToGPX(snappedRoute, () => {
-      setShowToast(true)
+      toast.success("GPX downloaded! Upload it and watch the reactions 🎉")
     })
   }
 
@@ -290,9 +293,9 @@ function App() {
 
   if (showHero) {
     return (
-      <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
+      <div className="h-screen w-screen flex flex-col bg-background">
         <Header onLogoClick={() => setShowHero(true)} />
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           <Hero onGetStarted={() => setShowHero(false)} />
         </div>
       </div>
@@ -346,18 +349,7 @@ function App() {
         </MapContainer>
         {isProcessing && <RouteProcessing progress={processingProgress} onCancel={handleCancelProcessing} />}
       </MapContainerWrapper>
-      {showToast && (
-        <Toast
-          message="GPX downloaded! Upload it and watch the reactions 🎉"
-          onClose={() => setShowToast(false)}
-        />
-      )}
-      {showCreativeHint && (
-        <Toast
-          message="Get creative first! 🎨"
-          onClose={() => setShowCreativeHint(false)}
-        />
-      )}
+      <Toaster />
     </div>
   )
 }

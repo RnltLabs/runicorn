@@ -6,6 +6,19 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider()
 
+interface SearchResult {
+  x: number
+  y: number
+  label: string
+  raw?: {
+    address?: {
+      city?: string
+      state?: string
+      country?: string
+    }
+  }
+}
+
 interface MapToolbarProps {
   onSearch: (query: string) => void
   routeStats?: {
@@ -18,7 +31,7 @@ interface MapToolbarProps {
 
 export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) {
   const [query, setQuery] = useState("")
-  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [suggestions, setSuggestions] = useState<SearchResult[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const searchRef = useRef<HTMLDivElement>(null)
@@ -67,7 +80,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
     }
   }
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = (suggestion: SearchResult) => {
     setQuery(suggestion.label)
     onSearch(suggestion.label)
     setShowSuggestions(false)

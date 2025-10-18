@@ -1,0 +1,94 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get version from package.json
+      id: package-version
+      run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/runicorn:latest
+          ${{ secrets.DOCKER_USERNAME }}/runicorn:v${{ steps.package-version.outputs.version }}
+        build-args: |
+          VITE_GRAPHHOPPER_API_KEY=${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/runicorn:latest
+        cache-to: type=inline
+
+    - name: Backup current production container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Save current image as backup
+          if docker ps -a | grep -q runicorn; then
+            docker commit runicorn runicorn:backup-$(date +%Y%m%d-%H%M%S) || true
+          fi
+
+    - name: Deploy to Production Server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/runicorn:latest
+          docker stop runicorn || true
+          docker rm runicorn || true
+          docker run -d -p 3002:3002 --name runicorn --restart unless-stopped ${{ secrets.DOCKER_USERNAME }}/runicorn:latest
+          docker image prune -f
+
+    - name: Verify deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          sleep 5
+          if docker ps | grep -q runicorn; then
+            echo "✅ Production deployment successful"
+            echo "🚀 Version: v${{ steps.package-version.outputs.version }}"
+          else
+            echo "❌ Production deployment failed"
+            exit 1
+          fi
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.package-version.outputs.version }}
+        release_name: Release v${{ steps.package-version.outputs.version }}
+        body: |
+          Automated release for version ${{ steps.package-version.outputs.version }}
+
+          **Deployed to:** https://rnltlabs.de/runicorn/
+        draft: false
+        prerelease: false

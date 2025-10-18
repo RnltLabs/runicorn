@@ -105,34 +105,42 @@ export function Hero({ onGetStarted }: HeroProps) {
                   </Badge>
                 </div>
                 <div className="w-full h-32 rounded-md bg-muted/50 flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="h-24 w-24 text-pink-500 opacity-90 group-hover:scale-105 transition-transform">
-                    <path d="M50,90 C50,90 10,60 10,40 C10,25 20,20 30,20 C40,20 50,30 50,30 C50,30 60,20 70,20 C80,20 90,25 90,40 C90,60 50,90 50,90 Z" fill="currentColor" />
+                  <svg viewBox="0 0 100 100" className="w-full h-24 text-pink-500 opacity-90 group-hover:scale-105 transition-transform">
+                    <path
+                      d="M 50 80 C 50 80 20 60 20 40 C 20 25 30 20 40 20 C 45 20 50 25 50 25 C 50 25 55 20 60 20 C 70 20 80 25 80 40 C 80 60 50 80 50 80 Z"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
                   </svg>
                 </div>
               </div>
 
-              {/* Cat Route */}
+              {/* PR Route */}
               <div className="group relative rounded-lg border bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm">
-                    J
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white font-bold text-sm">
+                    R
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-sm">Cat Walk</p>
-                    <p className="text-xs text-muted-foreground">3.4 km</p>
+                    <p className="font-semibold text-sm">PR</p>
+                    <p className="text-xs text-muted-foreground">3.5 km</p>
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    156 ❤️
+                    New record! 🏆
                   </Badge>
                 </div>
                 <div className="w-full h-32 rounded-md bg-muted/50 flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="h-20 w-20 text-purple-500 opacity-90 group-hover:scale-105 transition-transform">
-                    <ellipse cx="35" cy="45" rx="8" ry="12" fill="currentColor"/>
-                    <ellipse cx="65" cy="45" rx="8" ry="12" fill="currentColor"/>
-                    <circle cx="50" cy="55" r="22" fill="currentColor"/>
-                    <path d="M20,25 L28,35 L25,40 Z M80,25 L72,35 L75,40 Z" fill="currentColor"/>
-                    <ellipse cx="45" cy="57" rx="2" ry="3" fill="white"/>
-                    <ellipse cx="55" cy="57" rx="2" ry="3" fill="white"/>
+                  <svg viewBox="0 0 100 100" className="w-full h-20 text-emerald-600 opacity-90 group-hover:scale-105 transition-transform">
+                    <path
+                      d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 60 25 L 60 75 M 60 25 L 80 25 C 90 25 95 30 95 40 C 95 50 90 55 80 55 L 60 55 M 80 55 L 95 75"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
                   </svg>
                 </div>
               </div>

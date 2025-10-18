@@ -16,7 +16,8 @@ import { Header } from '@/components/Header'
 import { Hero } from '@/components/Hero'
 import { MapToolbar } from '@/components/MapToolbar'
 import { RouteProcessing } from '@/components/RouteProcessing'
-import { Toast } from '@/components/Toast'
+import { Toaster } from '@/components/ui/sonner'
+import { toast } from 'sonner'
 import { DrawControls } from '@/components/DrawControls'
 import { ZoomControls } from '@/components/ZoomControls'
 import { MapContainerWrapper } from '@/components/Map/MapContainer'
@@ -188,13 +189,11 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
 function App() {
   const [showHero, setShowHero] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [showToast, setShowToast] = useState(false)
   const [position, setPosition] = useState<[number, number]>([49.0069, 8.4037])
   const [zoom, setZoom] = useState(13)
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
   const [snappedRoute, setSnappedRoute] = useState<[number, number][]>([])
   const [routeStats, setRouteStats] = useState<RouteResult['stats'] | null>(null)
-  const [showCreativeHint, setShowCreativeHint] = useState(false)
   const [processingProgress, setProcessingProgress] = useState(0)
   const [abortController, setAbortController] = useState<AbortController | null>(null)
 
@@ -274,11 +273,11 @@ function App() {
 
   const handleExport = () => {
     if (snappedRoute.length === 0) {
-      setShowCreativeHint(true)
+      toast.info("Get creative first! 🎨")
       return
     }
     exportToGPX(snappedRoute, () => {
-      setShowToast(true)
+      toast.success("GPX downloaded! Upload it and watch the reactions 🎉")
     })
   }
 
@@ -346,18 +345,7 @@ function App() {
         </MapContainer>
         {isProcessing && <RouteProcessing progress={processingProgress} onCancel={handleCancelProcessing} />}
       </MapContainerWrapper>
-      {showToast && (
-        <Toast
-          message="GPX downloaded! Upload it and watch the reactions 🎉"
-          onClose={() => setShowToast(false)}
-        />
-      )}
-      {showCreativeHint && (
-        <Toast
-          message="Get creative first! 🎨"
-          onClose={() => setShowCreativeHint(false)}
-        />
-      )}
+      <Toaster />
     </div>
   )
 }

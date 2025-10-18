@@ -85,7 +85,7 @@ export function Hero({ onGetStarted }: HeroProps) {
                   <img
                     src={`${import.meta.env.BASE_URL}unicorn-example.png`}
                     alt="Unicorn Route"
-                    className="h-full w-auto object-contain opacity-90 group-hover:scale-105 transition-transform"
+                    className="h-20 w-auto object-contain opacity-90 group-hover:scale-105 transition-transform"
                   />
                 </div>
               </div>

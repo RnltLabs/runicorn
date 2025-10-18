@@ -3,6 +3,10 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Build argument for API key
+ARG VITE_GRAPHHOPPER_API_KEY
+ENV VITE_GRAPHHOPPER_API_KEY=$VITE_GRAPHHOPPER_API_KEY
+
 # Copy package files
 COPY package*.json ./
 

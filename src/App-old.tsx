@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2025 Roman Reinelt / RNLT Labs
+ *
+ * This software is proprietary and confidential.
+ * Unauthorized use, reproduction, or distribution is prohibited.
+ * For licensing information, contact: hello@rnltlabs.de
+ */
+
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, useMap, Polyline, useMapEvents } from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch'

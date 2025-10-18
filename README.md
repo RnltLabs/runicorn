@@ -1,86 +1,79 @@
 # 🦄 Runicorn
 
-> Draw unicorns, propose with GPS, get more kudos than your 5K PR.
+**Turn your runs into GPS art.**
 
-A creative GPS route drawing tool that lets you turn your runs into art. Draw custom routes, export to GPX, and make your activities legendary.
+Draw creative routes, export to GPX, and make your activities legendary.
 
----
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)](https://github.com/RnltLabs/runicorn)
 
-## ⚖️ License
-
-**Copyright © 2025 Roman Reinelt / RNLT Labs. All rights reserved.**
-
-This software is **proprietary and confidential**. This repository is public only to comply with GitHub's requirements for using GitHub Actions on the free tier.
-
-**NO LICENSE IS GRANTED** for use, modification, distribution, or copying of this code without explicit written permission from the copyright holder.
-
-For licensing inquiries, contact: Roman Reinelt / RNLT Labs
+🌐 **Live App:** [rnltlabs.de/runicorn](https://rnltlabs.de/runicorn/)
 
 ---
 
-## 🚀 Features
+## About
 
-- **Interactive Route Drawing** - Draw custom GPS routes on an interactive map
-- **Snap to Roads** - Automatically snap your drawings to actual roads
-- **Elevation Profile** - Get elevation gain/loss for your routes
-- **GPX Export** - Export your routes as GPX files for upload to activity tracking apps
-- **Dark Theme** - Beautiful dark mode interface
-- **Mobile-Friendly** - Works on desktop and mobile devices
+Runicorn is a web-based GPS route drawing tool that lets you create custom running, cycling, or walking routes on an interactive map. Whether you want to draw a unicorn, spell out a proposal, or plan the perfect scenic route - Runicorn makes it easy.
 
----
-
-## 🛠️ Tech Stack
-
-- **React** + TypeScript
-- **Vite** - Fast build tool
-- **Leaflet** - Interactive maps
-- **GraphHopper** - Routing & elevation data
-- **Tailwind CSS** - Styling
-- **Docker** - Containerized deployment
+**Key Features:**
+- 🎨 Interactive route drawing with real-time map feedback
+- 🛣️ Automatic road snapping for realistic routes
+- 📈 Elevation profiles with gain/loss statistics
+- 📥 GPX export for all major activity tracking platforms
+- 🌙 Modern dark theme interface
+- 📱 Fully responsive - works on desktop and mobile
 
 ---
 
-## 🔒 Security
+## Use Cases
 
-This is a production application with proper security measures:
-- All sensitive credentials stored in GitHub Secrets
-- Environment variables never committed to repository
-- API keys managed securely via build-time injection
-- Discord webhook notifications for deployments
-
----
-
-## 📦 Development
-
-This project uses a professional CI/CD workflow:
-
-- **Main Branch** → Production (https://rnltlabs.de/runicorn/)
-- **Develop Branch** → Staging (https://staging.rnltlabs.de/runicorn/)
-- **Feature Branches** → Pull Requests → Review → Merge
-
-### Local Development
-
-```bash
-npm install
-npm run dev
-```
-
-### Version Management
-
-```bash
-npm version patch  # Bug fixes (1.0.0 → 1.0.1)
-npm version minor  # New features (1.0.0 → 1.1.0)
-npm version major  # Breaking changes (1.0.0 → 2.0.0)
-```
+- **GPS Art** - Draw shapes, letters, or creative designs
+- **Route Planning** - Plan your next run or ride with elevation data
+- **Special Occasions** - Surprise someone with a GPS proposal
+- **Challenge Routes** - Create unique routes for your community
+- **Training Routes** - Design specific distance/elevation training routes
 
 ---
 
-## 🏢 About
+## Technology
 
-Developed by **Roman Reinelt** / **RNLT Labs**
-
-This repository is part of a portfolio of professional web applications.
+Built with modern web technologies for optimal performance:
+- React 18 + TypeScript
+- Leaflet for interactive mapping
+- GraphHopper routing engine
+- Tailwind CSS
 
 ---
+
+## License & Usage
 
 **© 2025 Roman Reinelt / RNLT Labs. All rights reserved.**
+
+This software is **proprietary and confidential**.
+
+⚠️ **This repository is public only to comply with GitHub's requirements for GitHub Actions on the free tier.**
+
+**NO LICENSE IS GRANTED** for use, modification, distribution, or any other purpose without explicit written permission from the copyright holder.
+
+Unauthorized copying, modification, or distribution of this software is strictly prohibited and may result in legal action.
+
+---
+
+## Author
+
+**Roman Reinelt** / **RNLT Labs**
+
+Building products that solve real problems - from concept to launch.
+
+For business inquiries or licensing questions: **hello@rnltlabs.de**
+
+---
+
+## Acknowledgments
+
+- Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- Routing powered by [GraphHopper](https://www.graphhopper.com/)
+
+---
+
+**© 2025 Roman Reinelt / RNLT Labs**

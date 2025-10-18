@@ -16,12 +16,12 @@ interface HeroProps {
 
 export function Hero({ onGetStarted }: HeroProps) {
   return (
-    <div className="relative h-full flex items-center justify-center bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="relative min-h-full bg-gradient-to-b from-background via-background to-muted/20">
       {/* Grid pattern background */}
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,transparent,black)] dark:bg-grid-slate-700/25" />
 
       {/* Content */}
-      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
         <div className="flex flex-col items-center text-center space-y-8 max-w-3xl mx-auto">
           {/* Badge */}
           <Badge variant="secondary" className="gap-1.5 px-3 py-1">

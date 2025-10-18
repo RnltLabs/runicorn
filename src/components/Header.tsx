@@ -9,7 +9,7 @@ export function Header({ onLogoClick }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-end cursor-pointer" onClick={onLogoClick}>
             <img
-              src="/r-logo.png"
+              src={`${import.meta.env.BASE_URL}r-logo.png`}
               alt="R Logo"
               className="h-11 w-auto object-contain -mb-0.5"
             />

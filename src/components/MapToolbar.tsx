@@ -6,6 +6,14 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider()
 
+// Type definition for search results from leaflet-geosearch
+interface SearchResultType {
+  x: number
+  y: number
+  label: string
+  raw?: unknown
+}
+
 interface MapToolbarProps {
   onSearch: (query: string) => void
   routeStats?: {
@@ -18,7 +26,7 @@ interface MapToolbarProps {
 
 export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) {
   const [query, setQuery] = useState("")
-  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [suggestions, setSuggestions] = useState<SearchResultType[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const searchRef = useRef<HTMLDivElement>(null)
@@ -67,7 +75,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
     }
   }
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = (suggestion: SearchResultType) => {
     setQuery(suggestion.label)
     onSearch(suggestion.label)
     setShowSuggestions(false)
@@ -128,15 +136,6 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
                       <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm truncate">{suggestion.label}</div>
-                        {suggestion.raw?.address && (
-                          <div className="text-xs text-muted-foreground truncate">
-                            {[
-                              suggestion.raw.address.city,
-                              suggestion.raw.address.state,
-                              suggestion.raw.address.country
-                            ].filter(Boolean).join(', ')}
-                          </div>
-                        )}
                       </div>
                     </button>
                   ))}

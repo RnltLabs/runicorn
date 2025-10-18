@@ -6,6 +6,14 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider()
 
+// Type definition for search results from leaflet-geosearch
+interface SearchResultType {
+  x: number
+  y: number
+  label: string
+  raw?: unknown
+}
+
 interface MapToolbarProps {
   onSearch: (query: string) => void
   routeStats?: {
@@ -18,7 +26,7 @@ interface MapToolbarProps {
 
 export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) {
   const [query, setQuery] = useState("")
-  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [suggestions, setSuggestions] = useState<SearchResultType[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const searchRef = useRef<HTMLDivElement>(null)
@@ -67,7 +75,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
     }
   }
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = (suggestion: SearchResultType) => {
     setQuery(suggestion.label)
     onSearch(suggestion.label)
     setShowSuggestions(false)
@@ -93,7 +101,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
   }
 
   return (
-    <div className="border-b bg-white/95 backdrop-blur-lg overflow-visible relative z-[10000]">
+    <div className="border-b bg-card/95 backdrop-blur-lg overflow-visible relative z-[10000]">
       <div className="container mx-auto px-4 py-3 overflow-visible">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 overflow-visible">
           {/* Search - Left */}
@@ -114,29 +122,20 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
 
               {/* Suggestions Dropdown */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-[10001] max-h-64 overflow-y-auto"
+                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl overflow-hidden z-[10001] max-h-64 overflow-y-auto"
                      style={{ minWidth: '250px' }}>
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className={`w-full px-3 py-2.5 text-left hover:bg-gray-100 flex items-start gap-2 transition-colors ${
-                        index === selectedIndex ? 'bg-gray-100' : ''
+                      className={`w-full px-3 py-2.5 text-left hover:bg-accent flex items-start gap-2 transition-colors ${
+                        index === selectedIndex ? 'bg-accent' : ''
                       }`}
                     >
                       <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm truncate">{suggestion.label}</div>
-                        {suggestion.raw?.address && (
-                          <div className="text-xs text-muted-foreground truncate">
-                            {[
-                              suggestion.raw.address.city,
-                              suggestion.raw.address.state,
-                              suggestion.raw.address.country
-                            ].filter(Boolean).join(', ')}
-                          </div>
-                        )}
                       </div>
                     </button>
                   ))}

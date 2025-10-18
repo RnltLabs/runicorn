@@ -103,9 +103,9 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
   return (
     <div className="border-b bg-card/95 backdrop-blur-lg overflow-visible relative z-[10000]">
       <div className="container mx-auto px-4 py-3 overflow-visible">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 overflow-visible">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 overflow-visible relative">
           {/* Search - Left */}
-          <form onSubmit={handleSubmit} className="flex gap-2 md:w-64 relative">
+          <form onSubmit={handleSubmit} className="flex gap-2 md:w-64 md:flex-shrink-0 relative">
             <div className="relative flex-1 z-50" ref={searchRef}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
               <Input
@@ -145,7 +145,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
           </form>
 
           {/* Stats - Center - Always visible */}
-          <div className="flex-1 flex items-center justify-center gap-4 overflow-x-auto pb-1 md:pb-0 mx-auto max-w-fit">
+          <div className="md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center justify-center gap-4 overflow-x-auto pb-1 md:pb-0">
             <div className="flex items-center gap-2 flex-shrink-0">
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Route className="h-4 w-4 text-primary" />
@@ -186,7 +186,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
           {/* Export - Right - Always visible */}
           <Button
             onClick={onExport}
-            className={`gap-2 md:ml-auto w-full md:w-auto ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`gap-2 md:ml-auto w-full md:w-auto md:flex-shrink-0 ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Download className="h-4 w-4" />
             Export GPX

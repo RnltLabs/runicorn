@@ -19,7 +19,7 @@ export function ZoomControls() {
         onClick={handleZoomIn}
         size="icon"
         variant="secondary"
-        className="h-11 w-11 shadow-lg backdrop-blur-sm"
+        className="h-12 w-12 shadow-lg backdrop-blur-sm"
         title="Zoom in"
       >
         <Plus className="h-5 w-5" />
@@ -28,7 +28,7 @@ export function ZoomControls() {
         onClick={handleZoomOut}
         size="icon"
         variant="secondary"
-        className="h-11 w-11 shadow-lg backdrop-blur-sm"
+        className="h-12 w-12 shadow-lg backdrop-blur-sm"
         title="Zoom out"
       >
         <Minus className="h-5 w-5" />

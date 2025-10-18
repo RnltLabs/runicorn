@@ -6,26 +6,89 @@ export function UnicornLogo({ className = "h-8 w-8" }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* Unicorn head outline as a route path */}
+      {/* Head outline */}
       <path
-        d="M 50 85 C 50 85 45 80 40 70 C 35 60 32 50 32 40 C 32 35 33 30 35 26 L 38 20 L 42 16 L 45 14 C 48 12 50 12 52 12 C 54 12 56 13 58 15 L 62 18 L 65 22 L 68 28 C 70 32 71 36 71 40 C 71 42 70.5 44 70 46 L 68 52 L 65 58 L 60 70 C 55 80 50 85 50 85 Z M 45 14 L 40 8 L 38 4"
+        d="M 25 85 C 25 85 20 80 20 70 L 20 50 C 20 45 21 40 23 36 C 25 32 28 28 32 25 C 36 22 40 20 45 20 C 48 20 51 21 54 22 L 58 25 C 60 27 62 30 63 33 C 65 36 66 40 66 44 L 66 50 C 66 55 65 60 63 65 C 61 70 58 75 54 78 C 50 82 45 85 40 87 L 35 88 L 30 87 L 25 85 Z"
         stroke="white"
-        strokeWidth="3.5"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
       />
-      {/* Ear */}
+
+      {/* Nose/Snout */}
       <path
-        d="M 58 15 L 62 10 L 64 14"
+        d="M 20 55 C 18 57 16 60 15 62 C 14 64 14 66 15 67 C 16 68 17 68 18 67"
         stroke="white"
-        strokeWidth="3.5"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
       />
+
+      {/* Horn with stripes */}
+      <path
+        d="M 54 22 L 68 8 L 72 4"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M 56 20 L 60 16 M 60 16 L 64 12 M 64 12 L 68 8"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Ears */}
+      <path
+        d="M 45 20 L 48 12 L 52 16"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M 52 16 L 56 10 L 58 14"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+
+      {/* Mane - flowing strands */}
+      <path
+        d="M 32 25 C 28 28 24 35 22 42"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M 36 22 C 32 26 28 32 26 38"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M 40 20 C 36 24 32 30 30 36"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+
       {/* Eye */}
-      <circle cx="55" cy="28" r="2.5" fill="white" />
+      <circle cx="42" cy="38" r="2.5" fill="white" />
+
+      {/* Nostril */}
+      <circle cx="20" cy="58" r="1.5" fill="white" />
     </svg>
   )
 }

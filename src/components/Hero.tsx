@@ -38,7 +38,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Draw it. Export it. Run it. Upload it. Watch the kudos roll in 🔥
+              Draw it.  Export it.  Run it.  Upload it.  Watch the kudos roll in 🔥
             </p>
           </div>
 

@@ -34,12 +34,23 @@ export function Header({ onLogoClick }: HeaderProps) {
             </div>
           </button>
 
-          {/* Tagline */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Tagline & Imprint */}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
+              <Separator orientation="vertical" className="h-6" />
+              <p className="text-sm text-muted-foreground font-medium">
+                GPS art made simple
+              </p>
+            </div>
             <Separator orientation="vertical" className="h-6" />
-            <p className="text-sm text-muted-foreground font-medium">
-              GPS art made simple
-            </p>
+            <a
+              href="https://rnltlabs.de/imprint.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
+            >
+              Imprint
+            </a>
           </div>
         </div>
       </div>

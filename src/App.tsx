@@ -5,8 +5,10 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { Header } from '@/components/Header'
-import { SearchBar } from '@/components/SearchBar'
-import { RouteStats } from '@/components/RouteStats'
+import { Hero } from '@/components/Hero'
+import { MapToolbar } from '@/components/MapToolbar'
+import { RouteProcessing } from '@/components/RouteProcessing'
+import { Toast } from '@/components/Toast'
 import { DrawControls } from '@/components/DrawControls'
 import { ZoomControls } from '@/components/ZoomControls'
 import { MapContainerWrapper } from '@/components/Map/MapContainer'
@@ -15,7 +17,7 @@ import { snapToRoad, type RouteResult } from '@/lib/graphhopper'
 import { exportToGPX } from '@/lib/gpx'
 
 const provider = new OpenStreetMapProvider()
-const STRAVA_ORANGE = '#FC4C02'
+const ROUTE_COLOR = '#FC4C02'
 
 function MapUpdater({ center, zoom, shouldUpdate }: { center: [number, number], zoom: number, shouldUpdate: boolean }) {
   const map = useMap()
@@ -87,11 +89,15 @@ function DrawingHandler({ isDrawing, currentPath, onPathUpdate }: DrawingHandler
 }
 
 function App() {
+  const [showHero, setShowHero] = useState(true)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [showToast, setShowToast] = useState(false)
   const [position, setPosition] = useState<[number, number]>([49.0069, 8.4037])
   const [zoom, setZoom] = useState(13)
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
   const [snappedRoute, setSnappedRoute] = useState<[number, number][]>([])
   const [routeStats, setRouteStats] = useState<RouteResult['stats'] | null>(null)
+  const [showCreativeHint, setShowCreativeHint] = useState(false)
 
   const {
     isDrawing,
@@ -122,9 +128,17 @@ function App() {
   const handleConfirm = async () => {
     const points = confirmDrawing()
     if (points.length > 0) {
-      const result = await snapToRoad(points)
-      setSnappedRoute(result.route)
-      setRouteStats(result.stats)
+      setIsProcessing(true)
+      try {
+        const result = await snapToRoad(points)
+        setSnappedRoute(result.route)
+        setRouteStats(result.stats)
+      } catch (error) {
+        console.error('Error processing route:', error)
+        alert('Error processing route. Please try again in a moment.')
+      } finally {
+        setIsProcessing(false)
+      }
     }
   }
 
@@ -135,7 +149,13 @@ function App() {
   }
 
   const handleExport = () => {
-    exportToGPX(snappedRoute)
+    if (snappedRoute.length === 0) {
+      setShowCreativeHint(true)
+      return
+    }
+    exportToGPX(snappedRoute, () => {
+      setShowToast(true)
+    })
   }
 
   useEffect(() => {
@@ -144,18 +164,25 @@ function App() {
     }
   }, [shouldUpdateMap])
 
+  if (showHero) {
+    return (
+      <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
+        <Header onLogoClick={() => setShowHero(true)} />
+        <div className="flex-1 overflow-hidden">
+          <Hero onGetStarted={() => setShowHero(false)} />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
-      <Header />
-      <SearchBar onSearch={handleSearch} />
-      {snappedRoute.length > 0 && routeStats && (
-        <RouteStats
-          distance={routeStats.distance}
-          ascend={routeStats.ascend}
-          descend={routeStats.descend}
-          onExport={handleExport}
-        />
-      )}
+      <Header onLogoClick={() => setShowHero(true)} />
+      <MapToolbar
+        onSearch={handleSearch}
+        routeStats={routeStats || undefined}
+        onExport={handleExport}
+      />
       <MapContainerWrapper>
         <MapContainer
           center={position}
@@ -179,10 +206,23 @@ function App() {
           />
           <ZoomControls />
           {snappedRoute.length > 0 && (
-            <Polyline positions={snappedRoute} color={STRAVA_ORANGE} weight={4} />
+            <Polyline positions={snappedRoute} color={ROUTE_COLOR} weight={4} />
           )}
         </MapContainer>
+        {isProcessing && <RouteProcessing />}
       </MapContainerWrapper>
+      {showToast && (
+        <Toast
+          message="GPX downloaded! Upload it and watch the reactions 🎉"
+          onClose={() => setShowToast(false)}
+        />
+      )}
+      {showCreativeHint && (
+        <Toast
+          message="Get creative first! 🎨"
+          onClose={() => setShowCreativeHint(false)}
+        />
+      )}
     </div>
   )
 }

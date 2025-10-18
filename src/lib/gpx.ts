@@ -1,4 +1,4 @@
-export function exportToGPX(route: [number, number][]): void {
+export function exportToGPX(route: [number, number][], onSuccess?: () => void): void {
   if (route.length === 0) {
     alert('No route to export')
     return
@@ -31,4 +31,8 @@ ${trackPoints}
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
+
+  if (onSuccess) {
+    onSuccess()
+  }
 }

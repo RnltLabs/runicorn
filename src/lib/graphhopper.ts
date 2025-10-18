@@ -91,6 +91,14 @@ export async function snapToRoad(points: [number, number][]): Promise<RouteResul
         const url = `https://graphhopper.com/api/1/route?${pointsParam}&profile=foot&locale=de&points_encoded=false&key=${apiKey}`
 
         const response = await fetch(url)
+
+        if (!response.ok) {
+          if (response.status === 429) {
+            throw new Error('Rate limit exceeded. Please wait a moment before trying again.')
+          }
+          throw new Error(`GraphHopper API error: ${response.status}`)
+        }
+
         const data = await response.json()
 
         if (data.paths && data.paths.length > 0) {

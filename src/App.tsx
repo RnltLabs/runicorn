@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, useMap, Polyline, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Polyline, useMapEvents, Circle } from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -31,18 +31,25 @@ function MapUpdater({ center, zoom, shouldUpdate }: { center: [number, number], 
   return null
 }
 
+type DrawMode = 'draw' | 'erase' | 'pan'
+
 interface DrawingHandlerProps {
   isDrawing: boolean
-  currentPath: [number, number][]
-  onPathUpdate: (points: [number, number][]) => void
+  drawMode: DrawMode
+  segments: [number, number][][]
+  onPathUpdate: (point: [number, number]) => void
+  onErase: (point: [number, number], radius: number) => void
 }
 
-function DrawingHandler({ isDrawing, currentPath, onPathUpdate }: DrawingHandlerProps) {
+function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }: DrawingHandlerProps) {
   const [isMouseDown, setIsMouseDown] = useState(false)
+  const [mousePosition, setMousePosition] = useState<[number, number] | null>(null)
+  const [eraserRadius, setEraserRadius] = useState(30) // Pixel radius
+  const ERASER_PIXEL_RADIUS = 30 // Fixed pixel size on screen
 
   const map = useMapEvents({
     mousedown: (e) => {
-      if (isDrawing) {
+      if (isDrawing && drawMode !== 'pan') {
         const originalEvent = (e as any).originalEvent
         if (originalEvent && originalEvent.target &&
             (originalEvent.target.closest('.absolute') ||
@@ -51,13 +58,55 @@ function DrawingHandler({ isDrawing, currentPath, onPathUpdate }: DrawingHandler
         }
         setIsMouseDown(true)
         const { lat, lng } = e.latlng
-        onPathUpdate([...currentPath, [lat, lng]])
+        console.log(`mousedown: drawMode=${drawMode}, lat=${lat}, lng=${lng}`)
+        if (drawMode === 'erase') {
+          // Calculate geographic radius based on pixel radius
+          const center = map.latLngToContainerPoint([lat, lng])
+          const offset = L.point(center.x + ERASER_PIXEL_RADIUS, center.y)
+          const offsetLatLng = map.containerPointToLatLng(offset)
+          const geoRadius = map.distance([lat, lng], [offsetLatLng.lat, offsetLatLng.lng])
+          const degreeRadius = (offsetLatLng.lng - lng)
+
+          console.log(`Calling onErase with radius: ${Math.abs(degreeRadius)}`)
+          onErase([lat, lng], Math.abs(degreeRadius))
+        } else if (drawMode === 'draw') {
+          console.log('Calling onPathUpdate')
+          onPathUpdate([lat, lng])
+        }
       }
     },
     mousemove: (e) => {
-      if (isDrawing && isMouseDown) {
-        const { lat, lng } = e.latlng
-        onPathUpdate([...currentPath, [lat, lng]])
+      const originalEvent = (e as any).originalEvent
+      const { lat, lng } = e.latlng
+
+      // Check if mouse is over UI elements
+      const isOverUI = originalEvent && originalEvent.target &&
+        (originalEvent.target.closest('.absolute') ||
+         originalEvent.target.closest('button'))
+
+      if (isDrawing && drawMode === 'erase') {
+        if (isOverUI) {
+          setMousePosition(null)
+        } else {
+          setMousePosition([lat, lng])
+          // Update radius based on zoom
+          const center = map.latLngToContainerPoint([lat, lng])
+          const offset = L.point(center.x + ERASER_PIXEL_RADIUS, center.y)
+          const offsetLatLng = map.containerPointToLatLng(offset)
+          const radius = map.distance([lat, lng], [offsetLatLng.lat, offsetLatLng.lng])
+          setEraserRadius(radius)
+        }
+      }
+      if (isDrawing && isMouseDown && !isOverUI && drawMode !== 'pan') {
+        if (drawMode === 'erase') {
+          const center = map.latLngToContainerPoint([lat, lng])
+          const offset = L.point(center.x + ERASER_PIXEL_RADIUS, center.y)
+          const offsetLatLng = map.containerPointToLatLng(offset)
+          const degreeRadius = (offsetLatLng.lng - lng)
+          onErase([lat, lng], Math.abs(degreeRadius))
+        } else if (drawMode === 'draw') {
+          onPathUpdate([lat, lng])
+        }
       }
     },
     mouseup: () => {
@@ -65,27 +114,68 @@ function DrawingHandler({ isDrawing, currentPath, onPathUpdate }: DrawingHandler
         setIsMouseDown(false)
       }
     },
+    zoomend: () => {
+      // Update eraser radius when zoom changes
+      if (drawMode === 'erase' && mousePosition) {
+        const center = map.latLngToContainerPoint(mousePosition)
+        const offset = L.point(center.x + ERASER_PIXEL_RADIUS, center.y)
+        const offsetLatLng = map.containerPointToLatLng(offset)
+        const radius = map.distance(mousePosition, [offsetLatLng.lat, offsetLatLng.lng])
+        setEraserRadius(radius)
+      }
+    }
   })
 
   useEffect(() => {
     if (isDrawing) {
-      map.dragging.disable()
-      map.getContainer().style.cursor = 'crosshair'
+      if (drawMode === 'pan') {
+        // Enable dragging in pan mode
+        map.dragging.enable()
+        map.getContainer().style.cursor = 'grab'
+      } else {
+        // Disable dragging in draw/erase modes
+        map.dragging.disable()
+        if (drawMode === 'erase') {
+          map.getContainer().style.cursor = 'none'
+        } else {
+          map.getContainer().style.cursor = 'crosshair'
+        }
+      }
     } else {
       map.dragging.enable()
       map.getContainer().style.cursor = ''
+      setMousePosition(null)
     }
-  }, [isDrawing, map])
+  }, [isDrawing, drawMode, map])
 
-  return currentPath.length > 1 ? (
-    <Polyline
-      positions={currentPath}
-      color="#6366f1"
-      weight={4}
-      opacity={1}
-      dashArray="10, 6"
-    />
-  ) : null
+  return (
+    <>
+      {segments.map((segment, index) =>
+        segment.length > 1 && (
+          <Polyline
+            key={index}
+            positions={segment}
+            color="#6366f1"
+            weight={4}
+            opacity={1}
+            dashArray="10, 6"
+          />
+        )
+      )}
+      {drawMode === 'erase' && mousePosition && (
+        <Circle
+          center={mousePosition}
+          radius={eraserRadius}
+          pathOptions={{
+            color: '#ef4444',
+            fillColor: '#ef4444',
+            fillOpacity: 0.2,
+            weight: 2
+          }}
+        />
+      )}
+    </>
+  )
 }
 
 function App() {
@@ -103,9 +193,12 @@ function App() {
 
   const {
     isDrawing,
-    drawnPoints,
+    drawnSegments,
+    drawMode,
     toggleDrawing,
+    setMode,
     updatePath,
+    erasePath,
     cancelDrawing,
     confirmDrawing,
   } = useRouteDrawing()
@@ -213,17 +306,28 @@ function App() {
           zoom={zoom}
           style={{ height: '100%', width: '100%' }}
           zoomControl={false}
+          touchZoom={true}
+          dragging={true}
+          scrollWheelZoom={true}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MapUpdater center={position} zoom={zoom} shouldUpdate={shouldUpdateMap} />
-          <DrawingHandler isDrawing={isDrawing} currentPath={drawnPoints} onPathUpdate={updatePath} />
+          <DrawingHandler
+            isDrawing={isDrawing}
+            drawMode={drawMode}
+            segments={drawnSegments}
+            onPathUpdate={updatePath}
+            onErase={erasePath}
+          />
           <DrawControls
             isDrawing={isDrawing}
+            drawMode={drawMode}
             hasRoute={snappedRoute.length > 0}
             onToggleDraw={toggleDrawing}
+            onSetMode={setMode}
             onConfirm={handleConfirm}
             onCancel={cancelDrawing}
             onReset={handleReset}

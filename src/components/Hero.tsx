@@ -119,9 +119,9 @@ export function Hero({ onGetStarted }: HeroProps) {
 
               {/* PR */}
               <div className="bg-white rounded-xl border shadow-sm p-3 space-y-2">
-                <svg viewBox="0 0 120 100" className="w-full h-20 text-emerald-600">
+                <svg viewBox="0 0 100 100" className="w-full h-20 text-emerald-600">
                   <path
-                    d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 40 55 L 55 75 M 70 25 L 70 75 M 70 25 L 90 25 C 100 25 105 30 105 40 C 105 50 100 55 90 55 L 70 55"
+                    d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 60 25 L 60 75 M 60 25 L 80 25 C 90 25 95 30 95 40 C 95 50 90 55 80 55 L 60 55 M 80 55 L 95 75"
                     stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"

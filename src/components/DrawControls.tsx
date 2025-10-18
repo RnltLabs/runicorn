@@ -26,7 +26,7 @@ export function DrawControls({
   onReset,
 }: DrawControlsProps) {
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 bg-white/95 backdrop-blur-lg rounded-full px-3 py-2 shadow-lg border no-select">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 bg-card/95 backdrop-blur-lg rounded-full px-3 py-2 shadow-lg border no-select">
       {!isDrawing && !hasRoute && (
         <Button
           onClick={onToggleDraw}
@@ -79,7 +79,7 @@ export function DrawControls({
             <Hand className="h-4 w-4" />
           </Button>
 
-          <div className="w-px h-6 bg-gray-300" />
+          <div className="w-px h-6 bg-border" />
 
           <Button
             onClick={onConfirm}

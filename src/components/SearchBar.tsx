@@ -18,7 +18,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
   }
 
   return (
-    <div className="border-b bg-white">
+    <div className="border-b bg-card/95 backdrop-blur-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <form onSubmit={handleSubmit} className="flex gap-2 max-w-xl mx-auto">
           <div className="relative flex-1">

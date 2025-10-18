@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2025 Roman Reinelt / RNLT Labs
+ *
+ * This software is proprietary and confidential.
+ * Unauthorized use, reproduction, or distribution is prohibited.
+ * For licensing information, contact: hello@rnltlabs.de
+ */
+
 import { Plus, Minus } from "lucide-react"
 import { useMap } from "react-leaflet"
 import { Button } from "@/components/ui/button"

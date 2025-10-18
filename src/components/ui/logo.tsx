@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2025 Roman Reinelt / RNLT Labs
+ *
+ * This software is proprietary and confidential.
+ * Unauthorized use, reproduction, or distribution is prohibited.
+ * For licensing information, contact: hello@rnltlabs.de
+ */
+
 export function UnicornLogo({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg

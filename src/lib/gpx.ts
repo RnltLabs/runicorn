@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2025 Roman Reinelt / RNLT Labs
+ *
+ * This software is proprietary and confidential.
+ * Unauthorized use, reproduction, or distribution is prohibited.
+ * For licensing information, contact: hello@rnltlabs.de
+ */
+
 export function exportToGPX(route: [number, number][], onSuccess?: () => void): void {
   if (route.length === 0) {
     alert('No route to export')

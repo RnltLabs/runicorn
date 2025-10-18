@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2025 Roman Reinelt / RNLT Labs
+ *
+ * This software is proprietary and confidential.
+ * Unauthorized use, reproduction, or distribution is prohibited.
+ * For licensing information, contact: hello@rnltlabs.de
+ */
+
 import { useState, type FormEvent, useEffect, useRef } from "react"
 import { Search, Download, TrendingUp, TrendingDown, Route, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"

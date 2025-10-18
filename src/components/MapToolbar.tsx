@@ -145,7 +145,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
           </form>
 
           {/* Stats - Center - Always visible */}
-          <div className="flex-1 flex items-center justify-center gap-4 overflow-x-auto pb-1 md:pb-0">
+          <div className="flex-1 flex items-center justify-center gap-4 overflow-x-auto pb-1 md:pb-0 mx-auto max-w-fit">
             <div className="flex items-center gap-2 flex-shrink-0">
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Route className="h-4 w-4 text-primary" />
@@ -159,8 +159,8 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="h-8 w-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-emerald-600" />
+              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-primary" />
               </div>
               <div className="text-sm">
                 <span className="font-semibold tabular-nums">
@@ -171,8 +171,8 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <TrendingDown className="h-4 w-4 text-blue-600" />
+              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <TrendingDown className="h-4 w-4 text-primary" />
               </div>
               <div className="text-sm">
                 <span className="font-semibold tabular-nums">

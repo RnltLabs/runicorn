@@ -59,3 +59,75 @@ jobs:
             echo "❌ Staging deployment failed"
             exit 1
           fi
+
+    - name: Notify Discord on Success
+      if: success()
+      run: |
+        curl -X POST "${{ secrets.DISCORD_WEBHOOK_RUNICORN_STAGING }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "🧪 Staging Deployment Successful",
+              "description": "Runicorn deployed to staging environment",
+              "color": 16776960,
+              "fields": [
+                {
+                  "name": "Environment",
+                  "value": "Staging",
+                  "inline": true
+                },
+                {
+                  "name": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "inline": true
+                },
+                {
+                  "name": "URL",
+                  "value": "[Open App](https://staging.rnltlabs.de/runicorn/)",
+                  "inline": false
+                },
+                {
+                  "name": "Commit",
+                  "value": "[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})",
+                  "inline": false
+                }
+              ],
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+            }]
+          }'
+
+    - name: Notify Discord on Failure
+      if: failure()
+      run: |
+        curl -X POST "${{ secrets.DISCORD_WEBHOOK_RUNICORN_ERRORS }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "❌ Staging Deployment Failed",
+              "description": "Runicorn staging deployment encountered an error",
+              "color": 15158332,
+              "fields": [
+                {
+                  "name": "Environment",
+                  "value": "Staging",
+                  "inline": true
+                },
+                {
+                  "name": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "inline": true
+                },
+                {
+                  "name": "Commit",
+                  "value": "[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})",
+                  "inline": false
+                },
+                {
+                  "name": "Workflow Run",
+                  "value": "[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                  "inline": false
+                }
+              ],
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+            }]
+          }'

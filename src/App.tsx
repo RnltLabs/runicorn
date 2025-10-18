@@ -54,7 +54,7 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
   const [isMouseDown, setIsMouseDown] = useState(false)
   const [mousePosition, setMousePosition] = useState<[number, number] | null>(null)
   const [eraserRadius, setEraserRadius] = useState(30) // Pixel radius
-  const ERASER_PIXEL_RADIUS = 30 // Fixed pixel size on screen
+  const ERASER_PIXEL_RADIUS = 45 // Fixed pixel size on screen (increased for mobile)
 
   const map = useMapEvents({
     mousedown: (e) => {
@@ -120,6 +120,10 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
     mouseup: () => {
       if (isDrawing) {
         setIsMouseDown(false)
+        // Hide eraser circle on mobile after touch ends
+        if (drawMode === 'erase') {
+          setMousePosition(null)
+        }
       }
     },
     zoomend: () => {
@@ -289,9 +293,9 @@ function App() {
 
   if (showHero) {
     return (
-      <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
+      <div className="h-screen w-screen flex flex-col bg-background">
         <Header onLogoClick={() => setShowHero(true)} />
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           <Hero onGetStarted={() => setShowHero(false)} />
         </div>
       </div>

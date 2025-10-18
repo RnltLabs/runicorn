@@ -124,7 +124,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
                 onKeyDown={handleKeyDown}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 placeholder="Search location..."
-                className="pl-9 h-10"
+                className="pl-9 h-11"
                 autoComplete="off"
               />
 
@@ -137,11 +137,11 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
                       key={index}
                       type="button"
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className={`w-full px-3 py-2.5 text-left hover:bg-accent flex items-start gap-2 transition-colors ${
+                      className={`w-full px-3 py-3 text-left hover:bg-accent flex items-start gap-2 transition-colors ${
                         index === selectedIndex ? 'bg-accent' : ''
                       }`}
                     >
-                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm truncate">{suggestion.label}</div>
                       </div>
@@ -155,7 +155,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
           {/* Stats - Center - Always visible */}
           <div className="md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center justify-center gap-4 overflow-x-auto pb-1 md:pb-0">
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Route className="h-4 w-4 text-primary" />
               </div>
               <div className="text-sm">
@@ -167,7 +167,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <TrendingUp className="h-4 w-4 text-primary" />
               </div>
               <div className="text-sm">
@@ -179,7 +179,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <TrendingDown className="h-4 w-4 text-primary" />
               </div>
               <div className="text-sm">
@@ -194,7 +194,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
           {/* Export - Right - Always visible */}
           <Button
             onClick={onExport}
-            className={`gap-2 md:ml-auto w-full md:w-auto md:flex-shrink-0 ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`gap-2 h-11 md:ml-auto w-full md:w-auto md:flex-shrink-0 ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Download className="h-4 w-4" />
             Export GPX

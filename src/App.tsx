@@ -98,6 +98,8 @@ function App() {
   const [snappedRoute, setSnappedRoute] = useState<[number, number][]>([])
   const [routeStats, setRouteStats] = useState<RouteResult['stats'] | null>(null)
   const [showCreativeHint, setShowCreativeHint] = useState(false)
+  const [processingProgress, setProcessingProgress] = useState(0)
+  const [abortController, setAbortController] = useState<AbortController | null>(null)
 
   const {
     isDrawing,
@@ -128,17 +130,39 @@ function App() {
   const handleConfirm = async () => {
     const points = confirmDrawing()
     if (points.length > 0) {
+      const controller = new AbortController()
+      setAbortController(controller)
       setIsProcessing(true)
+      setProcessingProgress(0)
       try {
-        const result = await snapToRoad(points)
-        setSnappedRoute(result.route)
-        setRouteStats(result.stats)
+        const result = await snapToRoad(points, (current, total) => {
+          const progress = (current / total) * 100
+          setProcessingProgress(progress)
+        })
+        if (!controller.signal.aborted) {
+          setSnappedRoute(result.route)
+          setRouteStats(result.stats)
+        }
       } catch (error) {
-        console.error('Error processing route:', error)
-        alert('Error processing route. Please try again in a moment.')
+        if (!controller.signal.aborted) {
+          console.error('Error processing route:', error)
+          alert('Error processing route. Please try again in a moment.')
+        }
       } finally {
         setIsProcessing(false)
+        setProcessingProgress(0)
+        setAbortController(null)
       }
+    }
+  }
+
+  const handleCancelProcessing = () => {
+    if (abortController) {
+      abortController.abort()
+      setIsProcessing(false)
+      setProcessingProgress(0)
+      setAbortController(null)
+      cancelDrawing()
     }
   }
 
@@ -209,7 +233,7 @@ function App() {
             <Polyline positions={snappedRoute} color={ROUTE_COLOR} weight={4} />
           )}
         </MapContainer>
-        {isProcessing && <RouteProcessing />}
+        {isProcessing && <RouteProcessing progress={processingProgress} onCancel={handleCancelProcessing} />}
       </MapContainerWrapper>
       {showToast && (
         <Toast

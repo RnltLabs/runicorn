@@ -58,7 +58,10 @@ export interface RouteResult {
   stats: RouteStats
 }
 
-export async function snapToRoad(points: [number, number][]): Promise<RouteResult> {
+export async function snapToRoad(
+  points: [number, number][],
+  onProgress?: (current: number, total: number) => void
+): Promise<RouteResult> {
   console.log('GraphHopper Routing called with points:', points.length)
 
   if (points.length < 2) {
@@ -82,47 +85,76 @@ export async function snapToRoad(points: [number, number][]): Promise<RouteResul
     let totalAscend = 0
     let totalDescend = 0
 
+    // Calculate total batches for progress
+    const totalBatches = Math.ceil((simplifiedPoints.length - 1) / (batchSize - 1))
+    let currentBatch = 0
+
     for (let i = 0; i < simplifiedPoints.length - 1; i += batchSize - 1) {
       const batchEnd = Math.min(i + batchSize, simplifiedPoints.length)
       const batch = simplifiedPoints.slice(i, batchEnd)
 
-      try {
-        const pointsParam = batch.map(p => `point=${p[0]},${p[1]}`).join('&')
-        const url = `https://graphhopper.com/api/1/route?${pointsParam}&profile=foot&locale=de&points_encoded=false&key=${apiKey}`
+      let retryCount = 0
+      const maxRetries = 3
+      let success = false
 
-        const response = await fetch(url)
+      while (!success && retryCount < maxRetries) {
+        try {
+          const pointsParam = batch.map(p => `point=${p[0]},${p[1]}`).join('&')
+          const url = `https://graphhopper.com/api/1/route?${pointsParam}&profile=foot&locale=de&points_encoded=false&key=${apiKey}`
 
-        if (!response.ok) {
-          if (response.status === 429) {
-            throw new Error('Rate limit exceeded. Please wait a moment before trying again.')
+          const response = await fetch(url)
+
+          if (!response.ok) {
+            if (response.status === 429) {
+              // Check for Retry-After header
+              const retryAfter = response.headers.get('Retry-After')
+              const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 2000 * Math.pow(2, retryCount)
+
+              console.log(`Rate limit hit. Waiting ${waitTime}ms before retry ${retryCount + 1}/${maxRetries}`)
+              await new Promise(resolve => setTimeout(resolve, waitTime))
+              retryCount++
+              continue
+            }
+            throw new Error(`GraphHopper API error: ${response.status}`)
           }
-          throw new Error(`GraphHopper API error: ${response.status}`)
-        }
 
-        const data = await response.json()
+          const data = await response.json()
 
-        if (data.paths && data.paths.length > 0) {
-          const path = data.paths[0]
-          const routePoints = path.points.coordinates.map((coord: [number, number]) =>
-            [coord[1], coord[0]] as [number, number]
-          )
+          if (data.paths && data.paths.length > 0) {
+            const path = data.paths[0]
+            const routePoints = path.points.coordinates.map((coord: [number, number]) =>
+              [coord[1], coord[0]] as [number, number]
+            )
 
-          totalDistance += path.distance
-          totalAscend += path.ascend || 0
-          totalDescend += path.descend || 0
+            totalDistance += path.distance
+            totalAscend += path.ascend || 0
+            totalDescend += path.descend || 0
 
-          if (finalRoute.length === 0) {
-            finalRoute.push(...routePoints)
-          } else {
-            finalRoute.push(...routePoints.slice(1))
+            if (finalRoute.length === 0) {
+              finalRoute.push(...routePoints)
+            } else {
+              finalRoute.push(...routePoints.slice(1))
+            }
+          }
+
+          success = true
+          currentBatch++
+
+          // Report progress
+          if (onProgress) {
+            onProgress(currentBatch, totalBatches)
+          }
+
+          // Longer delay between batches to avoid rate limiting
+          if (i + batchSize < simplifiedPoints.length) {
+            await new Promise(resolve => setTimeout(resolve, 1500))
+          }
+        } catch (error) {
+          if (retryCount >= maxRetries) {
+            console.error('Error routing batch after retries:', error)
+            break
           }
         }
-
-        if (i + batchSize < simplifiedPoints.length) {
-          await new Promise(resolve => setTimeout(resolve, 100))
-        }
-      } catch (error) {
-        console.error('Error routing batch:', error)
       }
     }
 

@@ -8,11 +8,11 @@ export function Header({ onLogoClick }: HeaderProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3 cursor-pointer" onClick={onLogoClick}>
-            <div className="rounded-xl p-1.5 shadow-sm" style={{ backgroundColor: '#fa7315' }}>
+            <div className="rounded-xl p-1 shadow-sm" style={{ backgroundColor: '#fa7315' }}>
               <img
                 src="/unicorn-logo.png"
                 alt="Runicorn Logo"
-                className="h-10 w-10 object-contain translate-y-0.5"
+                className="h-11 w-11 object-contain translate-y-0.5"
               />
             </div>
             <div>

@@ -53,7 +53,7 @@ export function Hero({ onGetStarted }: HeroProps) {
             {/* Right side - Social media style examples */}
             <div className="hidden lg:grid grid-cols-2 gap-3">
               {/* Unicorn Run */}
-              <div className="bg-white rounded-xl border shadow-sm p-3 space-y-2">
+              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
                 <div className="w-full h-20 flex items-center justify-center">
                   <img
                     src="/unicorn-example.png"
@@ -75,7 +75,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               </div>
 
               {/* Proposal Run */}
-              <div className="bg-white rounded-xl border shadow-sm p-3 space-y-2">
+              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
                 <svg viewBox="0 0 100 100" className="w-full h-20 text-pink-500">
                   <path
                     d="M 50 80 C 50 80 20 60 20 40 C 20 25 30 20 40 20 C 45 20 50 25 50 25 C 50 25 55 20 60 20 C 70 20 80 25 80 40 C 80 60 50 80 50 80 Z"
@@ -96,7 +96,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               </div>
 
               {/* Middle Finger */}
-              <div className="bg-white rounded-xl border shadow-sm p-3 space-y-2">
+              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
                 <svg viewBox="0 0 100 100" className="w-full h-20 text-indigo-500">
                   <path
                     d="M 35 75 L 35 55 L 42 55 L 42 35 L 50 35 L 50 25 L 58 25 L 58 35 L 65 35 L 65 55 L 72 55 L 72 75 L 65 75 L 58 75 L 50 75 L 42 75 L 35 75 M 32 75 C 32 75 32 80 35 82 C 40 84 60 84 65 82 C 68 80 68 75 68 75"
@@ -118,7 +118,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               </div>
 
               {/* PR */}
-              <div className="bg-white rounded-xl border shadow-sm p-3 space-y-2">
+              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
                 <svg viewBox="0 0 100 100" className="w-full h-20 text-emerald-600">
                   <path
                     d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 60 25 L 60 75 M 60 25 L 80 25 C 90 25 95 30 95 40 C 95 50 90 55 80 55 L 60 55 M 80 55 L 95 75"

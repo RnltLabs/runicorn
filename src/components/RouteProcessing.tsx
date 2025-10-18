@@ -7,13 +7,13 @@ interface RouteProcessingProps {
 
 export function RouteProcessing({ progress = 0, onCancel }: RouteProcessingProps) {
   return (
-    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-[2000] flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center space-y-6 relative">
+    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-[2000] flex items-center justify-center">
+      <div className="bg-card rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center space-y-6 relative border">
         {/* Cancel button */}
         {onCancel && (
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -27,10 +27,10 @@ export function RouteProcessing({ progress = 0, onCancel }: RouteProcessingProps
         </div>
 
         {/* Progress Track */}
-        <div className="relative h-16 bg-gray-100 rounded-full overflow-hidden">
+        <div className="relative h-16 bg-secondary rounded-full overflow-hidden">
           {/* Track lines */}
           <div className="absolute inset-0 flex items-center px-4">
-            <div className="flex-1 border-t-2 border-dashed border-gray-300"></div>
+            <div className="flex-1 border-t-2 border-dashed border-border"></div>
           </div>
 
           {/* Runner */}

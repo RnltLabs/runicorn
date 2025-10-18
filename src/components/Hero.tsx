@@ -56,7 +56,7 @@ export function Hero({ onGetStarted }: HeroProps) {
               <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
                 <div className="w-full h-20 flex items-center justify-center">
                   <img
-                    src="/unicorn-example.png"
+                    src={`${import.meta.env.BASE_URL}unicorn-example.png`}
                     alt="Unicorn Route"
                     className="h-full w-auto object-contain"
                   />

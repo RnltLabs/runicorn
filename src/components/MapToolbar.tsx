@@ -1,7 +1,10 @@
-import { useState, FormEvent } from "react"
-import { Search, Download, TrendingUp, TrendingDown, Route } from "lucide-react"
+import { useState, FormEvent, useEffect, useRef } from "react"
+import { Search, Download, TrendingUp, TrendingDown, Route, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { OpenStreetMapProvider } from 'leaflet-geosearch'
+
+const provider = new OpenStreetMapProvider()
 
 interface MapToolbarProps {
   onSearch: (query: string) => void
@@ -15,29 +18,130 @@ interface MapToolbarProps {
 
 export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) {
   const [query, setQuery] = useState("")
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const searchRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Debounce search
+  useEffect(() => {
+    if (!query.trim()) {
+      setSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const results = await provider.search({ query })
+        const limitedResults = results.slice(0, 5)
+        setSuggestions(limitedResults)
+        setShowSuggestions(limitedResults.length > 0)
+      } catch (error) {
+        console.error('Search error:', error)
+        setSuggestions([])
+      }
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [query])
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (query.trim()) {
       onSearch(query)
+      setShowSuggestions(false)
+    }
+  }
+
+  const handleSuggestionClick = (suggestion: any) => {
+    setQuery(suggestion.label)
+    onSearch(suggestion.label)
+    setShowSuggestions(false)
+    setSelectedIndex(-1)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showSuggestions) return
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1))
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault()
+      handleSuggestionClick(suggestions[selectedIndex])
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false)
+      setSelectedIndex(-1)
     }
   }
 
   return (
-    <div className="border-b bg-white/95 backdrop-blur-lg">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+    <div className="border-b bg-white/95 backdrop-blur-lg overflow-visible relative z-[10000]">
+      <div className="container mx-auto px-4 py-3 overflow-visible">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 overflow-visible">
           {/* Search - Left */}
-          <form onSubmit={handleSubmit} className="flex gap-2 md:w-64">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <form onSubmit={handleSubmit} className="flex gap-2 md:w-64 relative">
+            <div className="relative flex-1 z-50" ref={searchRef}>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
               <Input
+                ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 placeholder="Search location..."
                 className="pl-9 h-10"
+                autoComplete="off"
               />
+
+              {/* Suggestions Dropdown */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-[10001] max-h-64 overflow-y-auto"
+                     style={{ minWidth: '250px' }}>
+                  {suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className={`w-full px-3 py-2.5 text-left hover:bg-gray-100 flex items-start gap-2 transition-colors ${
+                        index === selectedIndex ? 'bg-gray-100' : ''
+                      }`}
+                    >
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm truncate">{suggestion.label}</div>
+                        {suggestion.raw?.address && (
+                          <div className="text-xs text-muted-foreground truncate">
+                            {[
+                              suggestion.raw.address.city,
+                              suggestion.raw.address.state,
+                              suggestion.raw.address.country
+                            ].filter(Boolean).join(', ')}
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </form>
 

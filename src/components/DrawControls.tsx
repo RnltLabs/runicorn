@@ -38,8 +38,7 @@ export function DrawControls({
       {!isDrawing && !hasRoute && (
         <Button
           onClick={onToggleDraw}
-          size="sm"
-          className="gap-2 rounded-full"
+          className="gap-2 h-11 px-4 rounded-full"
           style={{ backgroundColor: '#fa7315' }}
         >
           <Pencil className="h-4 w-4" />
@@ -49,62 +48,57 @@ export function DrawControls({
 
       {isDrawing && (
         <>
-          <span className="text-sm font-medium text-muted-foreground px-2">Tools</span>
+          <span className="text-sm font-medium text-muted-foreground px-2 hidden sm:inline">Tools</span>
 
           <Button
             onClick={() => onSetMode('draw')}
-            size="sm"
             variant={drawMode === 'draw' ? "default" : "outline"}
             className={cn(
-              "gap-1.5 rounded-full",
+              "gap-1.5 h-11 w-11 p-0 rounded-full",
               drawMode === 'draw' && "bg-blue-500 hover:bg-blue-600"
             )}
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="h-5 w-5" />
           </Button>
 
           <Button
             onClick={() => onSetMode('erase')}
-            size="sm"
             variant={drawMode === 'erase' ? "default" : "outline"}
             className={cn(
-              "gap-1.5 rounded-full",
+              "gap-1.5 h-11 w-11 p-0 rounded-full",
               drawMode === 'erase' && "bg-red-500 hover:bg-red-600"
             )}
           >
-            <Eraser className="h-4 w-4" />
+            <Eraser className="h-5 w-5" />
           </Button>
 
           <Button
             onClick={() => onSetMode('pan')}
-            size="sm"
             variant={drawMode === 'pan' ? "default" : "outline"}
             className={cn(
-              "gap-1.5 rounded-full",
+              "gap-1.5 h-11 w-11 p-0 rounded-full",
               drawMode === 'pan' && "bg-green-500 hover:bg-green-600"
             )}
           >
-            <Hand className="h-4 w-4" />
+            <Hand className="h-5 w-5" />
           </Button>
 
-          <div className="w-px h-6 bg-border" />
+          <div className="w-px h-6 bg-border hidden sm:block" />
 
           <Button
             onClick={onConfirm}
-            size="sm"
-            className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 rounded-full"
+            className="gap-1.5 h-11 px-4 bg-emerald-600 hover:bg-emerald-700 rounded-full"
           >
             <Check className="h-4 w-4" />
-            Finish
+            <span className="hidden sm:inline">Finish</span>
           </Button>
           <Button
             onClick={onCancel}
-            size="sm"
             variant="outline"
-            className="gap-1.5 rounded-full"
+            className="gap-1.5 h-11 px-4 sm:px-3 rounded-full"
           >
             <X className="h-4 w-4" />
-            Cancel
+            <span className="hidden sm:inline">Cancel</span>
           </Button>
         </>
       )}
@@ -112,9 +106,8 @@ export function DrawControls({
       {hasRoute && !isDrawing && (
         <Button
           onClick={onReset}
-          size="sm"
           variant="secondary"
-          className="gap-2 rounded-full"
+          className="gap-2 h-11 px-4 rounded-full"
         >
           <RotateCcw className="h-4 w-4" />
           New Route

@@ -7,7 +7,8 @@
  */
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Heart, TrendingUp, Route } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight, Sparkles, Route, Award } from "lucide-react"
 
 interface HeroProps {
   onGetStarted: () => void
@@ -15,138 +16,132 @@ interface HeroProps {
 
 export function Hero({ onGetStarted }: HeroProps) {
   return (
-    <div className="relative h-full flex overflow-hidden">
-      {/* Colorful blob backgrounds */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-primary/20 to-orange-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-br from-indigo-300/20 to-purple-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-br from-pink-300/20 to-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
+    <div className="relative min-h-full bg-gradient-to-b from-background via-background to-muted/20">
+      {/* Grid pattern background */}
+      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,transparent,black)] dark:bg-grid-slate-700/25" />
 
-      {/* Main content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex items-center flex-1">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left side - Text content */}
-            <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-              {/* Headline */}
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
-                Turn your run into
-                <span className="block mt-3">
-                  GPS art
-                </span>
-              </h1>
+      {/* Content */}
+      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+        <div className="flex flex-col items-center text-center space-y-8 max-w-3xl mx-auto">
+          {/* Badge */}
+          <Badge variant="secondary" className="gap-1.5 px-3 py-1">
+            <Sparkles className="h-3 w-3" />
+            <span className="text-xs font-medium">GPS Route Drawing Made Simple</span>
+          </Badge>
 
-              {/* Subheadline */}
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
-                Draw unicorns. Propose with GPS. Get more kudos than your 5K PR 🔥
-              </p>
+          {/* Headline */}
+          <div className="space-y-4">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
+              Turn your runs into
+              <span className="block mt-2 bg-gradient-to-r from-primary via-orange-500 to-primary bg-clip-text text-transparent">
+                GPS art
+              </span>
+            </h1>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Draw it.  Export it.  Run it.  Upload it.  Watch the kudos roll in 🔥
+            </p>
+          </div>
 
-              {/* CTA */}
-              <div>
-                <Button
-                  size="lg"
-                  onClick={onGetStarted}
-                  className="gap-2 text-base sm:text-lg px-8 sm:px-10 h-14 sm:h-16 rounded-2xl shadow-xl transition-all bg-orange-500 hover:bg-orange-600 hover:scale-[1.02] hover:shadow-2xl"
-                >
-                  Start Drawing
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-                <p className="text-sm text-muted-foreground mt-4">
-                  Free • No signup • GPX export
-                </p>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Button
+              size="lg"
+              onClick={onGetStarted}
+              className="gap-2 h-12 px-8 text-base font-medium"
+            >
+              Start Drawing
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <Route className="h-4 w-4" />
+                <span>Free forever</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Award className="h-4 w-4" />
+                <span>No signup</span>
               </div>
             </div>
+          </div>
 
-            {/* Right side - Social media style examples */}
-            <div className="hidden lg:grid grid-cols-2 gap-3">
-              {/* Unicorn Run */}
-              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
-                <div className="w-full h-20 flex items-center justify-center">
+          {/* Example Routes Grid */}
+          <div className="mt-12 w-full max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Unicorn Route */}
+              <div className="group relative rounded-lg border bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center text-white font-bold text-sm">
+                    R
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">The Unicorn</p>
+                    <p className="text-xs text-muted-foreground">2.8 km</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    247 ❤️
+                  </Badge>
+                </div>
+                <div className="w-full h-32 rounded-md bg-muted/50 flex items-center justify-center overflow-hidden">
                   <img
                     src={`${import.meta.env.BASE_URL}unicorn-example.png`}
                     alt="Unicorn Route"
-                    className="h-full w-auto object-contain"
+                    className="h-20 w-auto object-contain opacity-90 group-hover:scale-105 transition-transform"
                   />
-                </div>
-                <div className="space-y-1">
-                  <p className="font-semibold text-sm">The Unicorn</p>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Route className="h-3 w-3" />
-                    <span>2.8 km</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs">
-                    <Heart className="h-3 w-3 fill-red-500 text-red-500" />
-                    <span className="font-medium">247 kudos</span>
-                  </div>
                 </div>
               </div>
 
-              {/* Proposal Run */}
-              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
-                <svg viewBox="0 0 100 100" className="w-full h-20 text-pink-500">
-                  <path
-                    d="M 50 80 C 50 80 20 60 20 40 C 20 25 30 20 40 20 C 45 20 50 25 50 25 C 50 25 55 20 60 20 C 70 20 80 25 80 40 C 80 60 50 80 50 80 Z"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    fill="none"
-                  />
-                </svg>
-                <div className="space-y-1">
-                  <p className="font-semibold text-sm">Proposal Run</p>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Route className="h-3 w-3" />
-                    <span>4.2 km</span>
+              {/* Heart Route */}
+              <div className="group relative rounded-lg border bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-white font-bold text-sm">
+                    M
                   </div>
-                  <p className="text-xs font-medium text-pink-600">She said yes! 💍</p>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">Proposal ❤️</p>
+                    <p className="text-xs text-muted-foreground">5.2 km</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    892 ❤️
+                  </Badge>
+                </div>
+                <div className="w-full h-32 rounded-md bg-muted/50 flex items-center justify-center">
+                  <svg viewBox="0 0 100 100" className="w-full h-24 text-pink-500 opacity-90 group-hover:scale-105 transition-transform">
+                    <path
+                      d="M 50 80 C 50 80 20 60 20 40 C 20 25 30 20 40 20 C 45 20 50 25 50 25 C 50 25 55 20 60 20 C 70 20 80 25 80 40 C 80 60 50 80 50 80 Z"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </svg>
                 </div>
               </div>
 
-              {/* Middle Finger */}
-              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
-                <svg viewBox="0 0 100 100" className="w-full h-20 text-indigo-500">
-                  <path
-                    d="M 35 75 L 35 55 L 42 55 L 42 35 L 50 35 L 50 25 L 58 25 L 58 35 L 65 35 L 65 55 L 72 55 L 72 75 L 65 75 L 58 75 L 50 75 L 42 75 L 35 75 M 32 75 C 32 75 32 80 35 82 C 40 84 60 84 65 82 C 68 80 68 75 68 75"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
-                <div className="space-y-1">
-                  <p className="font-semibold text-sm">Traffic Jam</p>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Route className="h-3 w-3" />
-                    <span>0.8 km</span>
+              {/* PR Route */}
+              <div className="group relative rounded-lg border bg-card/50 backdrop-blur-sm p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white font-bold text-sm">
+                    R
                   </div>
-                  <p className="text-xs font-medium">Dedicated to drivers 🖕</p>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">PR</p>
+                    <p className="text-xs text-muted-foreground">3.5 km</p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    New record! 🏆
+                  </Badge>
                 </div>
-              </div>
-
-              {/* PR */}
-              <div className="bg-card rounded-xl border shadow-sm p-3 space-y-2">
-                <svg viewBox="0 0 100 100" className="w-full h-20 text-emerald-600">
-                  <path
-                    d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 60 25 L 60 75 M 60 25 L 80 25 C 90 25 95 30 95 40 C 95 50 90 55 80 55 L 60 55 M 80 55 L 95 75"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
-                <div className="space-y-1">
-                  <p className="font-semibold text-sm">PR</p>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Route className="h-3 w-3" />
-                    <span>3.5 km</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs">
-                    <TrendingUp className="h-3 w-3 text-emerald-600" />
-                    <span className="font-medium">New record! 🏆</span>
-                  </div>
+                <div className="w-full h-32 rounded-md bg-muted/50 flex items-center justify-center">
+                  <svg viewBox="0 0 100 100" className="w-full h-20 text-emerald-600 opacity-90 group-hover:scale-105 transition-transform">
+                    <path
+                      d="M 20 25 L 20 75 M 20 25 L 40 25 C 50 25 55 30 55 40 C 55 50 50 55 40 55 L 20 55 M 60 25 L 60 75 M 60 25 L 80 25 C 90 25 95 30 95 40 C 95 50 90 55 80 55 L 60 55 M 80 55 L 95 75"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>

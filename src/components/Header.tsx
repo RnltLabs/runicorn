@@ -6,28 +6,39 @@
  * For licensing information, contact: hello@rnltlabs.de
  */
 
+import { Separator } from "@/components/ui/separator"
+
 interface HeaderProps {
   onLogoClick?: () => void
 }
 
 export function Header({ onLogoClick }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-end cursor-pointer" onClick={onLogoClick}>
-            <img
-              src={`${import.meta.env.BASE_URL}r-logo.png`}
-              alt="R Logo"
-              className="h-11 w-auto object-contain -mb-0.5"
-            />
-            <h1 className="text-[1.75rem] font-semibold tracking-tight text-foreground select-none leading-none -ml-1.5 mt-1">
-              unicorn
-            </h1>
-          </div>
-          <div className="hidden sm:block">
-            <p className="text-sm text-muted-foreground">
-              Because normal routes are boring AF
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
+          <button
+            onClick={onLogoClick}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <div className="flex items-center">
+              <img
+                src={`${import.meta.env.BASE_URL}r-logo.png`}
+                alt="Runicorn"
+                className="h-8 w-auto"
+              />
+              <span className="text-xl font-bold tracking-tight -ml-1">
+                unicorn
+              </span>
+            </div>
+          </button>
+
+          {/* Tagline */}
+          <div className="hidden md:flex items-center gap-4">
+            <Separator orientation="vertical" className="h-6" />
+            <p className="text-sm text-muted-foreground font-medium">
+              GPS art made simple
             </p>
           </div>
         </div>

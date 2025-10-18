@@ -8,6 +8,7 @@
 
 import { Download, TrendingUp, TrendingDown, Route } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 interface RouteStatsProps {
   distance: number
@@ -18,44 +19,53 @@ interface RouteStatsProps {
 
 export function RouteStats({ distance, ascend, descend, onExport }: RouteStatsProps) {
   return (
-    <div className="border-b bg-card/95 backdrop-blur-lg">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div className="border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 lg:gap-8">
+          {/* Stats Section */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
+            {/* Distance */}
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="flex items-center justify-center h-11 w-11 rounded-md bg-primary/10">
                 <Route className="h-5 w-5 text-primary" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Distance</p>
-                <p className="text-lg font-semibold tabular-nums">{(distance / 1000).toFixed(2)} km</p>
+              <div className="flex flex-col">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Distance</span>
+                <span className="text-base font-semibold tabular-nums">{(distance / 1000).toFixed(2)} km</span>
               </div>
             </div>
 
+            <Separator orientation="vertical" className="h-10 hidden sm:block" />
+
+            {/* Elevation Gain */}
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
+              <div className="flex items-center justify-center h-11 w-11 rounded-md bg-emerald-500/10">
+                <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-500" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Elevation +</p>
-                <p className="text-lg font-semibold tabular-nums">{ascend.toFixed(0)} m</p>
+              <div className="flex flex-col">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Gain</span>
+                <span className="text-base font-semibold tabular-nums">{ascend.toFixed(0)} m</span>
               </div>
             </div>
 
+            <Separator orientation="vertical" className="h-10 hidden sm:block" />
+
+            {/* Elevation Loss */}
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                <TrendingDown className="h-5 w-5 text-blue-600" />
+              <div className="flex items-center justify-center h-11 w-11 rounded-md bg-blue-500/10">
+                <TrendingDown className="h-5 w-5 text-blue-600 dark:text-blue-500" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground font-medium">Elevation -</p>
-                <p className="text-lg font-semibold tabular-nums">{descend.toFixed(0)} m</p>
+              <div className="flex flex-col">
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Loss</span>
+                <span className="text-base font-semibold tabular-nums">{descend.toFixed(0)} m</span>
               </div>
             </div>
           </div>
 
+          {/* Export Button */}
           <Button
             onClick={onExport}
-            className="gap-2 font-medium px-6"
+            className="gap-2 h-11 px-4 font-medium w-full sm:w-auto"
           >
             <Download className="h-4 w-4" />
             Export GPX

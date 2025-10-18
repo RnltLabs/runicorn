@@ -11,7 +11,7 @@ interface SearchResultType {
   x: number
   y: number
   label: string
-  raw?: Record<string, unknown>
+  raw?: unknown
 }
 
 interface MapToolbarProps {

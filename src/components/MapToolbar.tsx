@@ -2,22 +2,9 @@ import { useState, type FormEvent, useEffect, useRef } from "react"
 import { Search, Download, TrendingUp, TrendingDown, Route, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { OpenStreetMapProvider } from 'leaflet-geosearch'
+import { OpenStreetMapProvider, type SearchResult } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider()
-
-interface SearchResult {
-  x: number
-  y: number
-  label: string
-  raw?: {
-    address?: {
-      city?: string
-      state?: string
-      country?: string
-    }
-  }
-}
 
 interface MapToolbarProps {
   onSearch: (query: string) => void

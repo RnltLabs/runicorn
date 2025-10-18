@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, useMap, Polyline, useMapEvents } from 'react-leaflet'
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
-import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import './App.css'
 
@@ -90,10 +89,10 @@ function DrawingHandler({ isDrawing, currentPath, onPathUpdate }: DrawingHandler
     mousedown: (e) => {
       if (isDrawing) {
         // Prüfe ob der Klick von einem UI-Element (Button) kommt
-        const originalEvent = (e as any).originalEvent
+        const originalEvent = e.originalEvent as MouseEvent | undefined
         if (originalEvent && originalEvent.target &&
-            (originalEvent.target.closest('.draw-controls') ||
-             originalEvent.target.closest('button'))) {
+            ((originalEvent.target as Element).closest('.draw-controls') ||
+             (originalEvent.target as Element).closest('button'))) {
           return // Ignoriere Klicks auf Buttons
         }
         setIsMouseDown(true)

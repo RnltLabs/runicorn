@@ -50,10 +50,10 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
   const map = useMapEvents({
     mousedown: (e) => {
       if (isDrawing && drawMode !== 'pan') {
-        const originalEvent = (e as any).originalEvent
+        const originalEvent = e.originalEvent as MouseEvent | undefined
         if (originalEvent && originalEvent.target &&
-            (originalEvent.target.closest('.absolute') ||
-             originalEvent.target.closest('button'))) {
+            ((originalEvent.target as Element).closest('.absolute') ||
+             (originalEvent.target as Element).closest('button'))) {
           return
         }
         setIsMouseDown(true)
@@ -75,13 +75,13 @@ function DrawingHandler({ isDrawing, drawMode, segments, onPathUpdate, onErase }
       }
     },
     mousemove: (e) => {
-      const originalEvent = (e as any).originalEvent
+      const originalEvent = e.originalEvent as MouseEvent | undefined
       const { lat, lng } = e.latlng
 
       // Check if mouse is over UI elements
       const isOverUI = originalEvent && originalEvent.target &&
-        (originalEvent.target.closest('.absolute') ||
-         originalEvent.target.closest('button'))
+        ((originalEvent.target as Element).closest('.absolute') ||
+         (originalEvent.target as Element).closest('button'))
 
       if (isDrawing && drawMode === 'erase') {
         if (isOverUI) {

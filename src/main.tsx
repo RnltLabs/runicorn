@@ -8,3 +8,4 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+console.log('Staging deployment test - Sat Oct 18 20:14:35 CEST 2025');

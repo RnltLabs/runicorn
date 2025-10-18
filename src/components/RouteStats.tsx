@@ -10,7 +10,7 @@ interface RouteStatsProps {
 
 export function RouteStats({ distance, ascend, descend, onExport }: RouteStatsProps) {
   return (
-    <div className="border-b bg-white/95 backdrop-blur">
+    <div className="border-b bg-card/95 backdrop-blur-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 lg:gap-8">

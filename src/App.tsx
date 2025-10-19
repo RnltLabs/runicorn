@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import { DrawControls } from '@/components/DrawControls'
 import { ZoomControls } from '@/components/ZoomControls'
 import { MapContainerWrapper } from '@/components/Map/MapContainer'
+import { ConsentBanner } from '@/components/ConsentBanner'
 import { useRouteDrawing } from '@/hooks/useRouteDrawing'
 import { snapToRoad, type RouteResult } from '@/lib/graphhopper'
 import { exportToGPX } from '@/lib/gpx'
@@ -298,6 +299,7 @@ function App() {
         <div className="flex-1 overflow-y-auto">
           <Hero onGetStarted={() => setShowHero(false)} />
         </div>
+        <ConsentBanner />
       </div>
     )
   }
@@ -350,6 +352,7 @@ function App() {
         {isProcessing && <RouteProcessing progress={processingProgress} onCancel={handleCancelProcessing} />}
       </MapContainerWrapper>
       <Toaster />
+      <ConsentBanner />
     </div>
   )
 }

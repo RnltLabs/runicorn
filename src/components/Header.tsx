@@ -44,7 +44,7 @@ export function Header({ onLogoClick }: HeaderProps) {
             </div>
             <Separator orientation="vertical" className="h-6" />
             <a
-              href="https://rnltlabs.de/imprint.html"
+              href="https://rnltlabs.de/imprint"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"

@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import { DrawControls } from '@/components/DrawControls'
 import { ZoomControls } from '@/components/ZoomControls'
 import { MapContainerWrapper } from '@/components/Map/MapContainer'
+import { CookieBanner } from '@/components/CookieBanner'
 import { useRouteDrawing } from '@/hooks/useRouteDrawing'
 import { snapToRoad, type RouteResult } from '@/lib/graphhopper'
 import { exportToGPX } from '@/lib/gpx'
@@ -350,6 +351,7 @@ function App() {
         {isProcessing && <RouteProcessing progress={processingProgress} onCancel={handleCancelProcessing} />}
       </MapContainerWrapper>
       <Toaster />
+      <CookieBanner />
     </div>
   )
 }

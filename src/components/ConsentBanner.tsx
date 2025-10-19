@@ -17,7 +17,7 @@ interface CookieConsent {
   timestamp: number
 }
 
-export function CookieBanner() {
+export function ConsentBanner() {
   const [showBanner, setShowBanner] = useState(false)
 
   useEffect(() => {

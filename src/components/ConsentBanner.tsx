@@ -7,7 +7,6 @@
  */
 
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
 
 const CONSENT_KEY = 'runicorn-cookie-consent'
 
@@ -53,10 +52,10 @@ export function ConsentBanner() {
       <div className="container mx-auto px-4 py-4 max-w-7xl">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1 text-sm">
-            <p className="font-semibold mb-2">🍪 Wir verwenden Cookies</p>
+            <p className="font-semibold mb-2">🍪 We use cookies</p>
             <p className="text-muted-foreground">
-              Diese Website verwendet nur technisch notwendige Cookies, um die Funktionalität zu gewährleisten.
-              Keine Tracking- oder Marketing-Cookies.
+              This website uses only technically necessary cookies to ensure functionality.
+              No tracking or marketing cookies.
               {' '}
               <a
                 href="https://rnltlabs.de/imprint"
@@ -64,7 +63,7 @@ export function ConsentBanner() {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Mehr erfahren
+                Learn more
               </a>
             </p>
           </div>
@@ -74,13 +73,13 @@ export function ConsentBanner() {
               onClick={acceptNecessary}
               className="px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-accent transition-colors"
             >
-              Nur notwendige
+              Necessary only
             </button>
             <button
               onClick={acceptAll}
               className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
             >
-              Alle akzeptieren
+              Accept all
             </button>
           </div>
         </div>

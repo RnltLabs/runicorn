@@ -104,7 +104,7 @@ jobs:
                 },
                 {
                   "name": "URL",
-                  "value": "[Open App](https://rnltlabs.de/runicorn/)",
+                  "value": "[Open App](https://runicorn.io/)",
                   "inline": false
                 },
                 {
@@ -196,7 +196,7 @@ jobs:
         body: |
           Automated release for version ${{ steps.package-version.outputs.version }}
 
-          **Deployed to:** https://rnltlabs.de/runicorn/
+          **Deployed to:** https://runicorn.io/
         draft: false
         prerelease: false
       env:

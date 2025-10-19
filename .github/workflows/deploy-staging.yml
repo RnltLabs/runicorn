@@ -83,7 +83,7 @@ jobs:
                 },
                 {
                   "name": "URL",
-                  "value": "[Open App](https://staging.rnltlabs.de/runicorn/)",
+                  "value": "[Open App](https://staging.runicorn.io/)",
                   "inline": false
                 },
                 {

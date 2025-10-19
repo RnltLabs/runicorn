@@ -299,6 +299,7 @@ function App() {
         <div className="flex-1 overflow-y-auto">
           <Hero onGetStarted={() => setShowHero(false)} />
         </div>
+        <ConsentBanner />
       </div>
     )
   }

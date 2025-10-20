@@ -30,3 +30,4 @@ WORKFLOW-CHEATSHEET.md
 *.njsproj
 *.sln
 *.sw?
+.linear-helper.sh

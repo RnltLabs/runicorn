@@ -35,9 +35,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/runicorn:latest
           ${{ secrets.DOCKER_USERNAME }}/runicorn:v${{ steps.package-version.outputs.version }}
-        build-args: |
           VITE_GRAPHHOPPER_API_KEY=${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/runicorn:latest
         cache-to: type=inline
 
     - name: Backup current production container
@@ -201,7 +199,6 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Update Linear Issues to Done
       if: success()
       run: |

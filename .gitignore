@@ -31,3 +31,10 @@ WORKFLOW-CHEATSHEET.md
 *.sln
 *.sw?
 .linear-helper.sh
+
+# Private configs (linked via symlinks)
+.rnlt
+.claude
+
+# EXCEPTION: Tech stack is public
+!.rnlt/project-config.yml

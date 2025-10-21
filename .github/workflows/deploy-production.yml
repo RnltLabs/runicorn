@@ -18,14 +18,14 @@ jobs:
       id: package-version
       run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -37,7 +37,6 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/runicorn:v${{ steps.package-version.outputs.version }}
         build-args: |
           VITE_GRAPHHOPPER_API_KEY=${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/runicorn:latest
         cache-to: type=inline
 
     - name: Backup current production container
@@ -201,3 +200,48 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Update Linear Issues to Done
+      if: success()
+      run: |
+        # Get the merged PR that triggered this deployment
+        PR_NUMBER=$(gh pr list --base main --state merged --limit 1 --json number --jq '.[0].number')
+
+        if [ -n "$PR_NUMBER" ]; then
+          # Get PR body and title
+          PR_DATA=$(gh pr view $PR_NUMBER --json body,title)
+          PR_BODY=$(echo "$PR_DATA" | jq -r '.body')
+          PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
+
+          # Extract all RNLT-X issue numbers from PR body and title
+          ISSUE_NUMBERS=$(echo -e "$PR_TITLE\n$PR_BODY" | grep -oP 'RNLT-\d+' | sort -u)
+
+          if [ -n "$ISSUE_NUMBERS" ]; then
+            echo "Found Linear issues: $ISSUE_NUMBERS"
+
+            # For each issue, get its ID and update status to Done
+            for ISSUE_IDENTIFIER in $ISSUE_NUMBERS; do
+              echo "Processing $ISSUE_IDENTIFIER..."
+
+              # Get issue ID from identifier
+              ISSUE_ID=$(curl -s -X POST https://api.linear.app/graphql \
+                -H "Content-Type: application/json" \
+                -H "Authorization: ${{ secrets.LINEAR_API_KEY }}" \
+                -d "{\"query\":\"{ issue(id: \\\"$ISSUE_IDENTIFIER\\\") { id } }\"}" \
+                | jq -r '.data.issue.id')
+
+              if [ "$ISSUE_ID" != "null" ] && [ -n "$ISSUE_ID" ]; then
+                # Update issue to Done
+                curl -s -X POST https://api.linear.app/graphql \
+                  -H "Content-Type: application/json" \
+                  -H "Authorization: ${{ secrets.LINEAR_API_KEY }}" \
+                  -d "{\"query\":\"mutation { issueUpdate(id: \\\"$ISSUE_ID\\\", input: { stateId: \\\"80530df2-d0e3-40bc-9526-eb5c0c310b6d\\\" }) { success } }\"}"
+
+                echo "✅ $ISSUE_IDENTIFIER updated to Done (Production deployed)"
+              fi
+            done
+          else
+            echo "No Linear issues found in PR #$PR_NUMBER"
+          fi
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

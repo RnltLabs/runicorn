@@ -7,6 +7,7 @@
  */
 
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 import { logger } from '@/utils/logger';
 
 interface Props {
@@ -33,7 +34,16 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log to Discord via logger
+    // Send to GlitchTip error tracking
+    Sentry.captureException(error, {
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack,
+        },
+      },
+    });
+
+    // Also log to Discord via logger (immediate notification)
     logger.fatal('React Error Boundary caught error', error, {
       componentStack: errorInfo.componentStack,
       errorBoundary: true,

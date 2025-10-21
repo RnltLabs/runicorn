@@ -35,6 +35,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/runicorn:latest
           ${{ secrets.DOCKER_USERNAME }}/runicorn:v${{ steps.package-version.outputs.version }}
+        build-args: |
           VITE_GRAPHHOPPER_API_KEY=${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
         cache-to: type=inline
 

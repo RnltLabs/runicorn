@@ -29,16 +29,6 @@ Sentry.init({
 
   // Always enabled (DSN selection handles environment routing)
   enabled: true,
-
-  // Integration with React
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-
-  // Privacy: don't capture replays by default
-  replaysSessionSampleRate: 0.0,
-  replaysOnErrorSampleRate: 0.0,
 });
 
 import { StrictMode } from 'react'

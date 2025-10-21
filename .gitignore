@@ -30,3 +30,14 @@ WORKFLOW-CHEATSHEET.md
 *.njsproj
 *.sln
 *.sw?
+.linear-helper.sh
+
+# Private configs (linked via symlinks)
+.rnlt
+.claude
+
+# EXCEPTION: Tech stack is public
+!.rnlt/project-config.yml
+
+# Workflow backups (created by setup-ci-cd.sh)
+.github/workflows.backup.*

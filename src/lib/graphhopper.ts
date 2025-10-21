@@ -6,6 +6,8 @@
  * For licensing information, contact: hello@rnltlabs.de
  */
 
+import { logger } from '@/utils/logger';
+
 // Douglas-Peucker algorithm for path simplification
 export function simplifyPath(points: [number, number][], tolerance: number): [number, number][] {
   if (points.length <= 2) return points
@@ -70,20 +72,32 @@ export async function snapToRoad(
   points: [number, number][],
   onProgress?: (current: number, total: number) => void
 ): Promise<RouteResult> {
-  console.log('GraphHopper Routing called with points:', points.length)
+  logger.info('graphhopper_routing_started', {
+    pointCount: points.length,
+  });
 
   if (points.length < 2) {
+    logger.warn('graphhopper_insufficient_points', {
+      pointCount: points.length,
+      minRequired: 2,
+    });
     return { route: points, stats: { distance: 0, ascend: 0, descend: 0 } }
   }
 
   const simplifiedPoints = simplifyPath(points, 0.00005)
-  console.log('Simplified from', points.length, 'to', simplifiedPoints.length, 'points')
+  logger.debug('graphhopper_path_simplified', {
+    originalPoints: points.length,
+    simplifiedPoints: simplifiedPoints.length,
+    reduction: Math.round((1 - simplifiedPoints.length / points.length) * 100) + '%',
+  });
 
   try {
     const apiKey = import.meta.env.VITE_GRAPHHOPPER_API_KEY
 
     if (!apiKey) {
-      console.error('GraphHopper API Key not found!')
+      logger.error('graphhopper_api_key_missing', undefined, {
+        environment: import.meta.env.MODE,
+      });
       return { route: points, stats: { distance: 0, ascend: 0, descend: 0 } }
     }
 
@@ -118,12 +132,31 @@ export async function snapToRoad(
               const retryAfter = response.headers.get('Retry-After')
               const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 2000 * Math.pow(2, retryCount)
 
-              console.log(`Rate limit hit. Waiting ${waitTime}ms before retry ${retryCount + 1}/${maxRetries}`)
+              logger.warn('graphhopper_rate_limit_hit', {
+                retryCount: retryCount + 1,
+                maxRetries,
+                waitTimeMs: waitTime,
+                retryAfterHeader: retryAfter,
+                batchIndex: i,
+                batchSize: batch.length,
+                totalPoints: simplifiedPoints.length,
+              });
+
               await new Promise(resolve => setTimeout(resolve, waitTime))
               retryCount++
               continue
             }
-            throw new Error(`GraphHopper API error: ${response.status}`)
+
+            const error = new Error(`GraphHopper API error: ${response.status}`);
+            logger.error('graphhopper_api_error', error, {
+              statusCode: response.status,
+              statusText: response.statusText,
+              batchIndex: i,
+              batchSize: batch.length,
+              retryCount,
+            });
+
+            throw error;
           }
 
           const data = await response.json()
@@ -158,20 +191,38 @@ export async function snapToRoad(
             await new Promise(resolve => setTimeout(resolve, 1500))
           }
         } catch (error) {
-          if (retryCount >= maxRetries) {
-            console.error('Error routing batch after retries:', error)
+          if (retryCount >= maxRetries - 1) {
+            logger.error('graphhopper_batch_failed_after_retries', error as Error, {
+              batchIndex: i,
+              batchSize: batch.length,
+              retryCount,
+              maxRetries,
+            });
             break
           }
+          retryCount++;
         }
       }
     }
+
+    logger.info('graphhopper_routing_completed', {
+      totalPoints: simplifiedPoints.length,
+      totalBatches,
+      totalDistance: Math.round(totalDistance),
+      totalAscend: Math.round(totalAscend),
+      totalDescend: Math.round(totalDescend),
+      routePointsCount: finalRoute.length,
+    });
 
     return {
       route: finalRoute,
       stats: { distance: totalDistance, ascend: totalAscend, descend: totalDescend }
     }
   } catch (error) {
-    console.error('Error in snapToRoad:', error)
+    logger.error('graphhopper_routing_failed', error as Error, {
+      pointCount: points.length,
+      simplifiedPointCount: simplifiedPoints.length,
+    });
     return { route: points, stats: { distance: 0, ascend: 0, descend: 0 } }
   }
 }

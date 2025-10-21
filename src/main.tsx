@@ -31,6 +31,12 @@ Sentry.init({
   enabled: true,
 });
 
+// Export Sentry globally for debugging
+if (typeof window !== 'undefined') {
+  (window as any).Sentry = Sentry;
+  (window as any).sentryDebug = { dsn, environment, enabled: true };
+}
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

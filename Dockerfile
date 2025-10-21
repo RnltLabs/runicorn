@@ -13,6 +13,10 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Build arg to bust cache when code changes
+ARG GIT_COMMIT=unknown
+RUN echo "Building commit: $GIT_COMMIT"
+
 # Copy source code
 COPY . .
 

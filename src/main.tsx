@@ -27,8 +27,8 @@ Sentry.init({
   sampleRate: 1.0, // 100% of errors
   tracesSampleRate: 0.0, // No performance tracking (GlitchTip doesn't support it well)
 
-  // Only track errors in production
-  enabled: import.meta.env.PROD,
+  // Always enabled (DSN selection handles environment routing)
+  enabled: true,
 
   // Integration with React
   integrations: [

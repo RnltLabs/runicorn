@@ -27,6 +27,7 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/runicorn:staging
+        build-args: |
           VITE_GRAPHHOPPER_API_KEY=${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
         cache-to: type=inline
 

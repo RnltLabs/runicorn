@@ -27,19 +27,15 @@ Sentry.init({
   sampleRate: 1.0, // 100% of errors
   tracesSampleRate: 0.0, // No performance tracking (GlitchTip doesn't support it well)
 
-  // Only track errors in production
-  enabled: import.meta.env.PROD,
-
-  // Integration with React
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-
-  // Privacy: don't capture replays by default
-  replaysSessionSampleRate: 0.0,
-  replaysOnErrorSampleRate: 0.0,
+  // Always enabled (DSN selection handles environment routing)
+  enabled: true,
 });
+
+// Export Sentry globally for debugging
+if (typeof window !== 'undefined') {
+  (window as any).Sentry = Sentry;
+  (window as any).sentryDebug = { dsn, environment, enabled: true };
+}
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

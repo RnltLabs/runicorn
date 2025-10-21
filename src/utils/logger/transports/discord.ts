@@ -29,8 +29,16 @@ export class DiscordTransport implements Transport {
   }
 
   async log(entry: LogEntry): Promise<void> {
-    // Only log WARN, ERROR, FATAL to Discord
-    if (entry.level < LogLevel.WARN) {
+    // Only log FATAL to Discord (critical-alerts channel)
+    // All other errors (ERROR, WARN) are tracked by GlitchTip only
+    if (entry.level !== LogLevel.FATAL) {
+      return;
+    }
+
+    // Only send to critical-alerts if PRODUCTION environment
+    // Staging fatal errors should NOT go to critical-alerts
+    const environment = entry.context?.environment || 'production';
+    if (environment !== 'production') {
       return;
     }
 
@@ -40,12 +48,11 @@ export class DiscordTransport implements Transport {
       return;
     }
 
-    // Choose webhook based on severity
-    const webhook =
-      entry.level === LogLevel.FATAL ? this.webhooks.critical : this.webhooks.errors;
+    // Use critical webhook for FATAL errors
+    const webhook = this.webhooks.critical;
 
     if (!webhook) {
-      console.warn('[DiscordTransport] No webhook configured for level:', getLogLevelName(entry.level));
+      console.warn('[DiscordTransport] No critical webhook configured');
       return;
     }
 

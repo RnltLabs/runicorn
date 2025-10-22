@@ -48,7 +48,7 @@ export function ConsentBanner() {
   if (!showBanner) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[200] bg-card border-t border-border shadow-lg animate-in slide-in-from-bottom-5">
+    <div className="fixed bottom-0 left-0 right-0 z-[10001] bg-card border-t border-border shadow-lg animate-in slide-in-from-bottom-5">
       <div className="container mx-auto px-4 py-4 max-w-7xl">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1 text-sm">

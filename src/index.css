@@ -54,3 +54,13 @@
     animation-delay: 4s;
   }
 }
+
+/* Ensure Leaflet map supports touch gestures */
+.leaflet-container {
+  touch-action: pan-x pan-y;
+}
+
+/* Allow pinch-zoom on map */
+.leaflet-touch-zoom {
+  touch-action: pinch-zoom pan-x pan-y;
+}

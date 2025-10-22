@@ -321,6 +321,7 @@ function App() {
           touchZoom={true}
           dragging={true}
           scrollWheelZoom={true}
+          doubleClickZoom={true}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

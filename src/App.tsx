@@ -319,11 +319,9 @@ function App() {
           style={{ height: '100%', width: '100%' }}
           zoomControl={false}
           touchZoom={true}
-          tap={true}
           dragging={true}
           scrollWheelZoom={true}
           doubleClickZoom={true}
-          boxZoom={true}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

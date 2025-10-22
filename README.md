@@ -7,7 +7,7 @@ Draw creative routes, export to GPX, and make your activities legendary.
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)](https://github.com/RnltLabs/runicorn)
 
-🌐 **Live App:** [rnltlabs.de/runicorn](https://rnltlabs.de/runicorn/)
+🌐 **Live App:** [runicorn.io](https://runicorn.io/)
 
 ---
 

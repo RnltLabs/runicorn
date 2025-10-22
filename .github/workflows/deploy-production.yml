@@ -119,7 +119,7 @@ jobs:
     - name: Notify Discord on Failure
       if: failure()
       run: |
-        curl -X POST "${{ secrets.DISCORD_WEBHOOK_RUNICORN_ERRORS }}" \
+        curl -X POST "${{ secrets.DISCORD_WEBHOOK_RUNICORN_PROD_ERRORS }}" \
           -H "Content-Type: application/json" \
           -d '{
             "embeds": [{

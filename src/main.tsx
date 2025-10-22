@@ -33,8 +33,8 @@ Sentry.init({
 
 // Export Sentry globally for debugging
 if (typeof window !== 'undefined') {
-  (window as any).Sentry = Sentry;
-  (window as any).sentryDebug = { dsn, environment, enabled: true };
+  (window as unknown as { Sentry: typeof Sentry; sentryDebug: { dsn: string; environment: string; enabled: boolean } }).Sentry = Sentry;
+  (window as unknown as { Sentry: typeof Sentry; sentryDebug: { dsn: string; environment: string; enabled: boolean } }).sentryDebug = { dsn, environment, enabled: true };
 }
 
 import { StrictMode } from 'react'

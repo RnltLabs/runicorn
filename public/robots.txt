@@ -1,0 +1,11 @@
+# Runicorn - robots.txt
+# Allow all search engines to crawl
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://runicorn.io/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 1

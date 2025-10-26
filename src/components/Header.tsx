@@ -10,9 +10,10 @@ import { Separator } from "@/components/ui/separator"
 
 interface HeaderProps {
   onLogoClick?: () => void
+  onPrivacyClick?: () => void
 }
 
-export function Header({ onLogoClick }: HeaderProps) {
+export function Header({ onLogoClick, onPrivacyClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +35,7 @@ export function Header({ onLogoClick }: HeaderProps) {
             </div>
           </button>
 
-          {/* Tagline & Imprint */}
+          {/* Tagline & Links */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4">
               <Separator orientation="vertical" className="h-6" />
@@ -43,14 +44,22 @@ export function Header({ onLogoClick }: HeaderProps) {
               </p>
             </div>
             <Separator orientation="vertical" className="h-6" />
-            <a
-              href="https://rnltlabs.de/imprint"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
-            >
-              Imprint
-            </a>
+            <nav className="flex items-center gap-4">
+              <button
+                onClick={onPrivacyClick}
+                className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
+              >
+                Privacy
+              </button>
+              <a
+                href="https://rnltlabs.de/imprint"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors"
+              >
+                Imprint
+              </a>
+            </nav>
           </div>
         </div>
       </div>

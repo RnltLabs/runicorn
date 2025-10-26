@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { loadUmamiAnalytics } from '@/lib/analytics'
 
 const CONSENT_KEY = 'runicorn-cookie-consent'
 
@@ -35,6 +36,11 @@ export function ConsentBanner() {
     }
     localStorage.setItem(CONSENT_KEY, JSON.stringify(consent))
     setShowBanner(false)
+
+    // Load analytics if user accepted
+    if (analytics) {
+      loadUmamiAnalytics()
+    }
   }
 
   const acceptAll = () => {
@@ -54,13 +60,11 @@ export function ConsentBanner() {
           <div className="flex-1 text-sm">
             <p className="font-semibold mb-2">🍪 We use cookies</p>
             <p className="text-muted-foreground">
-              This website uses only technically necessary cookies to ensure functionality.
-              No tracking or marketing cookies.
+              This website uses technically necessary cookies and optional analytics cookies (Umami, privacy-friendly, no personal data).
+              You can choose to accept all or only necessary cookies.
               {' '}
               <a
-                href="https://rnltlabs.de/imprint"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#/datenschutz"
                 className="text-primary hover:underline"
               >
                 Learn more

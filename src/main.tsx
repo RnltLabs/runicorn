@@ -37,14 +37,26 @@ if (typeof window !== 'undefined') {
   (window as unknown as { Sentry: typeof Sentry; sentryDebug: { dsn: string; environment: string; enabled: boolean } }).sentryDebug = { dsn, environment, enabled: true };
 }
 
+// Import self-hosted fonts (replaces Google Fonts CDN)
+import '@fontsource/figtree/300.css'
+import '@fontsource/figtree/400.css'
+import '@fontsource/figtree/500.css'
+import '@fontsource/figtree/600.css'
+import '@fontsource/figtree/700.css'
+import '@fontsource/figtree/800.css'
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { initializeAnalytics } from './lib/analytics'
 
 // Sentry automatically captures uncaught errors and unhandled rejections
 // No need for manual window.addEventListener anymore
+
+// Initialize analytics based on existing consent (ePrivacy compliant)
+initializeAnalytics()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

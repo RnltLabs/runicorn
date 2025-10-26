@@ -6,9 +6,11 @@
  * For licensing information, contact: hello@rnltlabs.de
  */
 
+import { toast } from 'sonner'
+
 export function exportToGPX(route: [number, number][], onSuccess?: () => void): void {
   if (route.length === 0) {
-    alert('No route to export')
+    toast.error('No route to export')
     return
   }
 

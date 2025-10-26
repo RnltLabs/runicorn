@@ -46,8 +46,8 @@ export function PrivacyPolicy({ onBack }: PrivacyPolicyProps) {
               <p>Germany</p>
               <p className="mt-4">
                 <strong>Email:</strong>{" "}
-                <a href="mailto:datenschutz@rnltlabs.de" className="text-primary hover:underline">
-                  datenschutz@rnltlabs.de
+                <a href="mailto:hello@rnltlabs.de" className="text-primary hover:underline">
+                  hello@rnltlabs.de
                 </a>
               </p>
               <p>
@@ -457,8 +457,8 @@ export function PrivacyPolicy({ onBack }: PrivacyPolicyProps) {
             <div className="bg-muted/50 rounded-lg p-6 my-4">
               <p>
                 <strong>Email:</strong>{" "}
-                <a href="mailto:datenschutz@rnltlabs.de" className="text-primary hover:underline">
-                  datenschutz@rnltlabs.de
+                <a href="mailto:hello@rnltlabs.de" className="text-primary hover:underline">
+                  hello@rnltlabs.de
                 </a>
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -643,8 +643,8 @@ export function PrivacyPolicy({ onBack }: PrivacyPolicyProps) {
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               If you have questions about this privacy policy, please contact:{" "}
-              <a href="mailto:datenschutz@rnltlabs.de" className="text-primary hover:underline">
-                datenschutz@rnltlabs.de
+              <a href="mailto:hello@rnltlabs.de" className="text-primary hover:underline">
+                hello@rnltlabs.de
               </a>
             </p>
           </section>

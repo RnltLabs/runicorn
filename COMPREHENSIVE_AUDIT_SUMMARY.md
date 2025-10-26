@@ -27,20 +27,19 @@
 
 ## 🔴 KRITISCHE PROBLEME (Sofort beheben!)
 
-### 1. **Security: API-Schlüssel öffentlich exponiert** ⚡
-**Schweregrad**: CRITICAL
-**Risiko**: Unbegrenzte Kosten durch API-Missbrauch
+### 1. **Security: API-Schlüssel öffentlich exponiert** ℹ️
+**Schweregrad**: MEDIUM (Free Plan, wird bald durch andere API ersetzt)
+**Risiko**: Limitiertes Risiko bei Free Plan
 **Betroffen**: GraphHopper API-Schlüssel `a65c854a-06df-44dd-94f5-e013c845436b`
 
-**Sofortmaßnahme (HEUTE)**:
-```bash
-# 1. GraphHopper Dashboard öffnen
-# 2. Neuen API-Schlüssel erstellen mit Domain-Restriction
-# 3. Alten Schlüssel SOFORT löschen
-# 4. Cloudflare Workers Proxy implementieren (siehe docs/fixes/FIX_01_API_KEY_SECURITY.md)
-```
+**Status**: Kann vorerst ignoriert werden, da:
+- Nur Free Plan (limitierte Nutzung)
+- Wird bald auf andere Routing-API umgestellt
 
-**Zeitaufwand**: 2 Stunden
+**Langfristige Lösung**:
+- Cloudflare Workers Proxy implementieren (siehe `docs/fixes/FIX_01_API_KEY_SECURITY.md`)
+- Migration auf neue Routing-API
+
 **Details**: `SECURITY_AUDIT_REPORT.md` Issue #1
 
 ---
@@ -386,8 +385,7 @@ npm audit fix
 **Zeitaufwand**: 12 Stunden
 **Ziel**: Kritische Sicherheitslücken schließen, DSGVO-konform werden
 
-#### Tag 1 (HEUTE) - 2 Stunden
-- [ ] ⚡ GraphHopper API-Schlüssel rotieren (15 min)
+#### Tag 1 (HEUTE) - 1.5 Stunden
 - [ ] ⚡ `npm audit fix` (5 min)
 - [ ] ⚡ Security Headers zu nginx hinzufügen (30 min)
 - [ ] ⚡ HTTPS mit Let's Encrypt aktivieren (1h)
@@ -699,10 +697,11 @@ npm run build  # <300 KB enforced by Vite config
 
 ### HEUTE (26.10.2025) - 2 Stunden
 1. [ ] Alle Reports lesen (30 min)
-2. [ ] GraphHopper API-Schlüssel rotieren ⚡ (15 min)
-3. [ ] `npm audit fix` ausführen ⚡ (5 min)
-4. [ ] Security Headers zu nginx hinzufügen ⚡ (30 min)
-5. [ ] HTTPS aktivieren ⚡ (45 min)
+2. [ ] `npm audit fix` ausführen ⚡ (5 min)
+3. [ ] Security Headers zu nginx hinzufügen ⚡ (30 min)
+4. [ ] HTTPS aktivieren ⚡ (1h)
+
+**Hinweis**: GraphHopper API-Schlüssel kann vorerst ignoriert werden (Free Plan, wird bald ersetzt)
 
 ### DIESE WOCHE (bis 29.10.2025) - Sprint 1
 6. [ ] Cloudflare Workers Proxy implementieren (2h)
@@ -760,8 +759,8 @@ npm run build  # <300 KB enforced by Vite config
 
 ## ⚠️ WICHTIGE WARNUNGEN
 
-### 🔴 KRITISCH: API-Schlüssel exponiert!
-Der GraphHopper API-Schlüssel `a65c854a-06df-44dd-94f5-e013c845436b` ist **ÖFFENTLICH SICHTBAR** im JavaScript-Bundle. Dieser Schlüssel muss **HEUTE** rotiert werden, da er bereits öffentlich bekannt ist!
+### ℹ️ INFO: API-Schlüssel im Bundle
+Der GraphHopper API-Schlüssel `a65c854a-06df-44dd-94f5-e013c845436b` ist im JavaScript-Bundle sichtbar. **Kann vorerst ignoriert werden**, da nur Free Plan genutzt wird und Migration auf andere API geplant ist.
 
 ### 🔴 KRITISCH: DSGVO-Verstoß!
 Die Website verstößt aktuell gegen DSGVO Art. 13-14 (fehlende Datenschutzerklärung) und ePrivacy (Cookie-Consent lädt vor Einwilligung). Dies kann zu Bußgeldern bis zu **€10M oder 2% Umsatz** führen!
@@ -771,8 +770,7 @@ Der Code verstößt gegen die eigenen Projekt-Standards (0% Test Coverage statt 
 
 ---
 
-**Audit abgeschlossen von**: Claude Code (4 spezialisierte Agents)
-**Report Version**: 1.0
+**Report Version**: 1.1
 **Letzte Aktualisierung**: 2025-10-26
 **Status**: ✅ Komplett - Bereit für Implementation
 

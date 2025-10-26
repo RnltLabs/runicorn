@@ -5,7 +5,7 @@
  * @see https://web.dev/vitals/
  */
 
-import { getCLS, getFID, getFCP, getLCP, getTTFB, type Metric } from 'web-vitals'
+import { onCLS, onINP, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals'
 
 // Extend Window type for Umami
 declare global {
@@ -28,11 +28,14 @@ function sendToAnalytics(metric: Metric): void {
   // Determine rating (good, needs-improvement, poor)
   const rating = getRating(metric)
 
-  console.log(`[Web Vitals] ${metric.name}:`, {
-    value: metric.name === 'CLS' ? metric.value : `${value}ms`,
-    rating,
-    id: metric.id,
-  })
+  // Log in development only (pre-commit hook allows console.log in DEV blocks)
+  if (import.meta.env.DEV) {
+    console.log(`[Web Vitals] ${metric.name}:`, {
+      value: metric.name === 'CLS' ? metric.value : `${value}ms`,
+      rating,
+      id: metric.id,
+    })
+  }
 
   // Send to Umami if available
   if (window.umami) {
@@ -57,7 +60,7 @@ function getRating(metric: Metric): 'good' | 'needs-improvement' | 'poor' {
   const thresholds = {
     FCP: [1800, 3000],  // First Contentful Paint
     LCP: [2500, 4000],  // Largest Contentful Paint
-    FID: [100, 300],    // First Input Delay (deprecated, use INP)
+    INP: [200, 500],    // Interaction to Next Paint
     CLS: [0.1, 0.25],   // Cumulative Layout Shift
     TTFB: [800, 1800],  // Time to First Byte
   }
@@ -82,15 +85,18 @@ export function initWebVitals(): void {
   }
 
   try {
-    getCLS(sendToAnalytics)
-    getFID(sendToAnalytics) // Deprecated but still measured for compatibility
-    getFCP(sendToAnalytics)
-    getLCP(sendToAnalytics)
-    getTTFB(sendToAnalytics)
+    onCLS(sendToAnalytics)
+    onINP(sendToAnalytics) // Interaction to Next Paint (replaces FID)
+    onFCP(sendToAnalytics)
+    onLCP(sendToAnalytics)
+    onTTFB(sendToAnalytics)
 
-    console.log('[Web Vitals] Tracking initialized')
+    // Note: Tracking is silent in production (metrics sent to Umami)
   } catch (error) {
-    console.error('[Web Vitals] Failed to initialize:', error)
+    // Note: Errors are silent in production (use Sentry for error monitoring)
+    if (import.meta.env.DEV) {
+      console.error('[Web Vitals] Failed to initialize:', error)
+    }
   }
 }
 

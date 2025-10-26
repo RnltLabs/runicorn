@@ -18,7 +18,7 @@
     <meta property="og:url" content="https://runicorn.io/" />
     <meta property="og:title" content="Runicorn - GPS Art Route Planner | Create Running Routes & GPX Files" />
     <meta property="og:description" content="Create stunning GPS art routes for running and cycling. Draw custom routes, get elevation data, and export GPX files for Strava and other fitness apps." />
-    <meta property="og:image" content="https://runicorn.io/og-image.png" />
+    <meta property="og:image" content="https://runicorn.io/og-image.webp" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Runicorn" />
@@ -29,7 +29,7 @@
     <meta name="twitter:url" content="https://runicorn.io/" />
     <meta name="twitter:title" content="Runicorn - GPS Art Route Planner | Create Running Routes & GPX Files" />
     <meta name="twitter:description" content="Create stunning GPS art routes for running and cycling. Draw custom routes, get elevation data, and export GPX files." />
-    <meta name="twitter:image" content="https://runicorn.io/twitter-image.png" />
+    <meta name="twitter:image" content="https://runicorn.io/twitter-image.webp" />
     <meta name="twitter:creator" content="@rnltlabs" />
 
     <!-- Additional Meta Tags -->
@@ -42,9 +42,7 @@
 
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/r-logo.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts self-hosted via @fontsource/figtree (imported in main.tsx) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
     <!-- JSON-LD Structured Data -->
@@ -76,7 +74,7 @@
         "Real-time distance tracking",
         "Mobile responsive design"
       ],
-      "screenshot": "https://runicorn.io/screenshot.png",
+      "screenshot": "https://runicorn.io/screenshot.webp",
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.8",
@@ -85,8 +83,7 @@
     }
     </script>
 
-    <!-- Umami Analytics -->
-    <script defer src="https://analytics.rnltlabs.de/script.js" data-website-id="4e47ed83-80b7-4c48-bfcf-129989ca61ee"></script>
+    <!-- Umami Analytics loaded conditionally after consent (see src/lib/analytics.ts) -->
   </head>
   <body>
     <div id="root"></div>

@@ -15,18 +15,20 @@ export default defineConfig({
   build: {
     // Enable source maps for production (needed for GlitchTip error stacktraces)
     sourcemap: true,
+
+    // Performance optimizations
     rollupOptions: {
       output: {
+        // Manual chunking for better caching
         manualChunks: {
-          // Separate Leaflet and map-related libraries into their own chunk
-          // This will be lazy-loaded only when user opens the map
-          'leaflet-vendor': [
-            'leaflet',
-            'react-leaflet',
-            'leaflet-geosearch',
-          ],
-          // Separate UI library into its own chunk
-          'radix-ui': [
+          // React vendor chunk (changes infrequently)
+          'react-vendor': ['react', 'react-dom'],
+
+          // Map vendor chunk (large libraries, lazy loaded)
+          'map-vendor': ['leaflet', 'react-leaflet', 'leaflet-geosearch'],
+
+          // UI vendor chunk (Radix UI components)
+          'ui-vendor': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-progress',
             '@radix-ui/react-separator',
@@ -34,7 +36,22 @@ export default defineConfig({
             '@radix-ui/react-toggle',
             '@radix-ui/react-toggle-group',
           ],
+
+          // Monitoring vendor chunk
+          'monitoring-vendor': ['@sentry/react'],
         },
+      },
+    },
+
+    // Performance budget - warn if chunks exceed limit
+    chunkSizeWarningLimit: 300, // 300 KB (down from default 500 KB)
+
+    // Minification options
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
       },
     },
   },

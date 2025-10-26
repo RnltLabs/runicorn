@@ -7,15 +7,28 @@
  */
 
 import { useState } from 'react'
+import { logger } from '@/utils/logger'
 
 type DrawMode = 'draw' | 'erase' | 'pan'
 
-export function useRouteDrawing() {
+interface UseRouteDrawingReturn {
+  isDrawing: boolean
+  drawnSegments: [number, number][][]
+  drawMode: DrawMode
+  toggleDrawing: () => void
+  setMode: (mode: DrawMode) => void
+  updatePath: (point: [number, number]) => void
+  erasePath: (point: [number, number], radius: number) => void
+  cancelDrawing: () => void
+  confirmDrawing: () => [number, number][]
+}
+
+export function useRouteDrawing(): UseRouteDrawingReturn {
   const [isDrawing, setIsDrawing] = useState(false)
   const [drawnSegments, setDrawnSegments] = useState<[number, number][][]>([[]])
   const [drawMode, setDrawMode] = useState<DrawMode>('draw')
 
-  const toggleDrawing = () => {
+  const toggleDrawing = (): void => {
     if (!isDrawing) {
       setDrawnSegments([[]])
       setDrawMode('draw')
@@ -23,8 +36,11 @@ export function useRouteDrawing() {
     setIsDrawing(!isDrawing)
   }
 
-  const setMode = (mode: DrawMode) => {
-    console.log('setMode:', { oldMode: drawMode, newMode: mode })
+  const setMode = (mode: DrawMode): void => {
+    logger.debug('draw_mode_changed', {
+      oldMode: drawMode,
+      newMode: mode,
+    })
     const previousMode = drawMode
     setDrawMode(mode)
 
@@ -34,19 +50,24 @@ export function useRouteDrawing() {
     }
   }
 
-  const updatePath = (point: [number, number]) => {
+  const updatePath = (point: [number, number]): void => {
     setDrawnSegments(prev => {
       const newSegments = [...prev]
       const lastSegment = [...newSegments[newSegments.length - 1]]
       lastSegment.push(point)
       newSegments[newSegments.length - 1] = lastSegment
-      console.log(`updatePath: added point, segment now has ${lastSegment.length} points`)
+      logger.debug('path_point_added', {
+        segmentLength: lastSegment.length,
+      })
       return newSegments
     })
   }
 
-  const erasePath = (point: [number, number], radius: number) => {
-    console.log(`erasePath: point=[${point[0]}, ${point[1]}], radius=${radius}`)
+  const erasePath = (point: [number, number], radius: number): void => {
+    logger.debug('path_erase_started', {
+      point,
+      radius,
+    })
 
     const newSegments: [number, number][][] = []
 
@@ -82,17 +103,20 @@ export function useRouteDrawing() {
       newSegments.push([])
     }
 
-    console.log(`Segments: ${drawnSegments.length} -> ${newSegments.length}`)
+    logger.debug('path_erase_completed', {
+      segmentsBefore: drawnSegments.length,
+      segmentsAfter: newSegments.length,
+    })
     setDrawnSegments(newSegments)
   }
 
-  const cancelDrawing = () => {
+  const cancelDrawing = (): void => {
     setDrawnSegments([[]])
     setIsDrawing(false)
     setDrawMode('draw')
   }
 
-  const confirmDrawing = () => {
+  const confirmDrawing = (): [number, number][] => {
     setIsDrawing(false)
     setDrawMode('draw')
     // Flatten all segments into one array for processing

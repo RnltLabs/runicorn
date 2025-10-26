@@ -11,6 +11,7 @@ import { Search, Download, TrendingUp, TrendingDown, Route, MapPin } from "lucid
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
+import { logger } from '@/utils/logger'
 
 const provider = new OpenStreetMapProvider()
 
@@ -55,7 +56,9 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
         setSuggestions(limitedResults)
         setShowSuggestions(limitedResults.length > 0)
       } catch (error) {
-        console.error('Search error:', error)
+        logger.error('location_suggestion_search_failed', error as Error, {
+          query,
+        })
         setSuggestions([])
       }
     }, 300)

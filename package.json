@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "type-check": "tsc -b --noEmit",
     "test": "echo 'No tests yet. TODO: Add Node.js Tap tests (see Code Review Report)'",
+    "test:coverage": "echo 'No tests yet. Coverage: 0% (Target: 100%)'",
     "preview": "vite preview"
   },
   "dependencies": {

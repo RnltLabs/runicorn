@@ -41,3 +41,6 @@ WORKFLOW-CHEATSHEET.md
 
 # Workflow backups (created by setup-ci-cd.sh)
 .github/workflows.backup.*
+
+# Presentation files (not part of project)
+presentation/

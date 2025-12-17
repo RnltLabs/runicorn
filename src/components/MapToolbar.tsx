@@ -116,10 +116,10 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
       <div className="container mx-auto px-4 py-3 overflow-visible">
         <div className="flex flex-col gap-3 overflow-visible relative">
           {/* Row 1: Search + Export Button (Mobile) / Search, Stats, Export (Desktop) */}
-          <div className="flex items-center gap-2 md:gap-3 overflow-visible relative">
-            {/* Search - Left */}
-            <form onSubmit={handleSubmit} className="flex gap-2 flex-1 md:w-64 md:flex-1-0 relative">
-              <div className="relative flex-1 z-50" ref={searchRef}>
+          <div className="flex items-center gap-2 md:gap-4 overflow-visible">
+            {/* Search - Left, limited width on desktop */}
+            <form onSubmit={handleSubmit} className="flex gap-2 flex-1 md:flex-none md:w-64 lg:w-80 relative">
+              <div className="relative flex-1 md:flex-none md:w-full z-50" ref={searchRef}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
                 <Input
                   ref={inputRef}
@@ -157,8 +157,8 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
               </div>
             </form>
 
-            {/* Stats - Center - Desktop only in this row */}
-            <div className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2 items-center justify-center gap-4">
+            {/* Stats - Center - Desktop only, takes remaining space */}
+            <div className="hidden md:flex flex-1 items-center justify-center gap-4">
               <div className="flex items-center gap-2 flex-shrink-0">
                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Route className="h-4 w-4 text-primary" />
@@ -199,7 +199,7 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
             {/* Export - Right */}
             <Button
               onClick={onExport}
-              className={`gap-2 h-11 md:ml-auto flex-shrink-0 ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`gap-2 h-11 flex-shrink-0 ${!routeStats ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <Download className="h-4 w-4" />
               <span className="hidden sm:inline">Export GPX</span>

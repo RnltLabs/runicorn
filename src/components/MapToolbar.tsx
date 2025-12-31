@@ -113,12 +113,53 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
 
   return (
     <div className="border-b bg-card/95 backdrop-blur-lg overflow-visible relative z-[10000]">
+      {/* Stats - Desktop only, absolutely centered in full window width */}
+      <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
+        <div className="flex items-center gap-4 pointer-events-auto">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Route className="h-4 w-4 text-primary" />
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold tabular-nums">
+                {routeStats ? (routeStats.distance / 1000).toFixed(2) : '-'}
+              </span>
+              <span className="text-muted-foreground ml-1">km</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingUp className="h-4 w-4 text-primary" />
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold tabular-nums">
+                {routeStats ? routeStats.ascend.toFixed(0) : '-'}
+              </span>
+              <span className="text-muted-foreground ml-1">m</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <TrendingDown className="h-4 w-4 text-primary" />
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold tabular-nums">
+                {routeStats ? routeStats.descend.toFixed(0) : '-'}
+              </span>
+              <span className="text-muted-foreground ml-1">m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 py-3 overflow-visible">
         <div className="flex flex-col gap-3 overflow-visible relative">
           {/* Row 1: Search + Export Button (Mobile) / Search, Stats, Export (Desktop) */}
-          <div className="flex items-center gap-2 md:gap-4 overflow-visible">
+          <div className="flex items-center justify-between gap-2 md:gap-4 overflow-visible relative">
             {/* Search - Left, limited width on desktop */}
-            <form onSubmit={handleSubmit} className="flex gap-2 flex-1 md:flex-none md:w-64 lg:w-80 relative">
+            <form onSubmit={handleSubmit} className="flex gap-2 flex-1 md:flex-none md:w-64 lg:w-80 relative z-10">
               <div className="relative flex-1 md:flex-none md:w-full z-50" ref={searchRef}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
                 <Input
@@ -156,45 +197,6 @@ export function MapToolbar({ onSearch, routeStats, onExport }: MapToolbarProps) 
                 )}
               </div>
             </form>
-
-            {/* Stats - Center - Desktop only, takes remaining space */}
-            <div className="hidden md:flex flex-1 items-center justify-center gap-4">
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Route className="h-4 w-4 text-primary" />
-                </div>
-                <div className="text-sm">
-                  <span className="font-semibold tabular-nums">
-                    {routeStats ? (routeStats.distance / 1000).toFixed(2) : '-'}
-                  </span>
-                  <span className="text-muted-foreground ml-1">km</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-primary" />
-                </div>
-                <div className="text-sm">
-                  <span className="font-semibold tabular-nums">
-                    {routeStats ? routeStats.ascend.toFixed(0) : '-'}
-                  </span>
-                  <span className="text-muted-foreground ml-1">m</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <TrendingDown className="h-4 w-4 text-primary" />
-                </div>
-                <div className="text-sm">
-                  <span className="font-semibold tabular-nums">
-                    {routeStats ? routeStats.descend.toFixed(0) : '-'}
-                  </span>
-                  <span className="text-muted-foreground ml-1">m</span>
-                </div>
-              </div>
-            </div>
 
             {/* Export - Right */}
             <Button
